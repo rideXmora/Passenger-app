@@ -1,5 +1,5 @@
-import 'package:get/get.dart';
+// import 'package:get/get.dart';
 
-class Controller extends GetxController {
-  var loading = true.obs;
-}
+// class Controller extends GetxController {
+//   var loading = true.obs;
+// }
