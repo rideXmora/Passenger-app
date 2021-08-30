@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:passenger_app/pages/splash_screen.dart';
+import 'package:flutter/services.dart';
+import 'package:passenger_app/pages/language_selection_screen.dart';
 import 'package:passenger_app/theme/colors.dart';
 
 void main() {
-  runApp(MyApp());
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark));
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((_) {
+    runApp(new MyApp());
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -19,7 +27,7 @@ class MyApp extends StatelessWidget {
         primaryColorLight: primaryColorLight,
         backgroundColor: primaryColorWhite,
       ),
-      home: SplashScreen(),
+      home: LanguageSelectionScreen(),
     );
   }
 }
