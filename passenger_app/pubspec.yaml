@@ -35,7 +35,8 @@ dependencies:
   cloud_firestore: ^2.4.0
   flutter_launcher_icons: 
   flutter_launcher_name: 
-#  flutter_svg:
+  flutter_svg:
+  flutter_multi_formatter:
 # get:
 
 dev_dependencies:

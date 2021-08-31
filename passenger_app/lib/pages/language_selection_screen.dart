@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:passenger_app/theme/colors.dart';
@@ -15,7 +13,6 @@ class LanguageSelectionScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
-
           children: [
             Column(
               children: [
@@ -41,7 +38,9 @@ class LanguageSelectionScreen extends StatelessWidget {
             SizedBox(
               height: 70,
             ),
-            Center(child: LanguageSelectionRadioButton(),),
+            Center(
+              child: LanguageSelectionRadioButton(),
+            ),
           ],
         ),
       ),

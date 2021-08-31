@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:passenger_app/pages/getting_started_screen.dart';
 import 'package:passenger_app/pages/language_selection_screen.dart';
 import 'package:passenger_app/theme/colors.dart';
 
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
         primaryColorLight: primaryColorLight,
         backgroundColor: primaryColorWhite,
       ),
-      home: LanguageSelectionScreen(),
+      home: GettingStartedScreen(),
     );
   }
 }
