@@ -37,6 +37,7 @@ dependencies:
   flutter_launcher_name: 
   flutter_svg:
   flutter_multi_formatter:
+  pinput:
 # get:
 
 dev_dependencies:
