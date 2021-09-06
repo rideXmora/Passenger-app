@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:passenger_app/pages/search_location_screen.dart';
 import 'package:passenger_app/theme/colors.dart';
-import 'package:passenger_app/pages/home_screen.dart';
+import 'package:passenger_app/pages/home_screens.dart';
 import 'package:passenger_app/pages/profile_screen.dart';
 import 'package:passenger_app/pages/trip_history_screen.dart';
 
@@ -11,6 +12,7 @@ class BottomNavHandler extends StatefulWidget {
 
 class _BottomNavHandlerState extends State<BottomNavHandler> {
   var bottomBarIndex = 1;
+  var secondIndex = 1;
 
   @override
   void initState() {
@@ -19,16 +21,15 @@ class _BottomNavHandlerState extends State<BottomNavHandler> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> pages = [
+    List<Widget> pages = [
       ProfileScreen(),
-      HomeScreen(),
+      HomeScreens(),
       TripHistoryScreen(),
     ];
-
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       extendBody: true,
-      body: pages[bottomBarIndex],
+      body: pages[secondIndex],
       bottomNavigationBar: Container(
         height: 70,
         child: ClipRRect(
@@ -46,6 +47,7 @@ class _BottomNavHandlerState extends State<BottomNavHandler> {
             onTap: (index) async {
               setState(() {
                 bottomBarIndex = index;
+                secondIndex = index;
               });
             },
             items: [

@@ -8,8 +8,6 @@ class TripHistoryScreen extends StatefulWidget {
   _TripHistoryScreenState createState() => _TripHistoryScreenState();
 }
 
-int bottomBarIndex = 2;
-
 class _TripHistoryScreenState extends State<TripHistoryScreen> {
   @override
   Widget build(BuildContext context) {
