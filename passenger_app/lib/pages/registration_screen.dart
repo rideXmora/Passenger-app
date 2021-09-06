@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
+import 'package:passenger_app/pages/bottom_navigation_bar_handler.dart';
 import 'package:passenger_app/theme/colors.dart';
 import 'package:passenger_app/widgets/custom_back_button.dart';
 import 'package:passenger_app/widgets/custom_text_field.dart';
@@ -278,15 +279,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   setState(() {
                     loading = false;
                   });
-                  // Navigator.pushReplacement(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (BuildContext context) =>
-                  //         MobileNumberVerificationScreen(
-                  //             phoneNo: phoneNumber,
-                  //             page: "GETTING_STARTED_PAGE"),
-                  //   ),
-                  // );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => BottomNavHandler(),
+                    ),
+                  );
                 });
               } else {
                 setState(() {
