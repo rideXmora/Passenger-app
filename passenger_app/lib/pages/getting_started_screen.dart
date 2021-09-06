@@ -168,7 +168,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
                             setState(() {
                               loading = false;
                             });
-                            Navigator.pushReplacement(
+                            Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (BuildContext context) =>

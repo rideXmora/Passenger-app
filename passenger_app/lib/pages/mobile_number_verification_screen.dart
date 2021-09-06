@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:passenger_app/pages/registration_screen.dart';
 import 'package:passenger_app/theme/colors.dart';
 import 'package:passenger_app/widgets/custom_back_button.dart';
 import 'package:passenger_app/widgets/main_button.dart';
@@ -269,6 +270,13 @@ class _MobileNumberVerificationScreenState
                         setState(() {
                           loading = false;
                         });
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    RegistrationScreen(
+                                      phoneNo: widget.phoneNo,
+                                    )));
                       });
                     }
                   },
