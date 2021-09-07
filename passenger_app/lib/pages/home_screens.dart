@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:passenger_app/pages/home_screen.dart';
+import 'package:passenger_app/pages/map_screen.dart';
 import 'package:passenger_app/pages/search_location_screen.dart';
 import 'package:passenger_app/theme/colors.dart';
 import 'package:passenger_app/widgets/custom_text_field.dart';
@@ -39,6 +40,7 @@ class _HomeScreensState extends State<HomeScreens> {
                 },
               )
             : Container(),
+        MapScreen(onTap: () {})
       ],
     );
   }

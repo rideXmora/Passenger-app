@@ -38,6 +38,7 @@ dependencies:
   flutter_svg:
   flutter_multi_formatter:
   pinput:
+  google_maps_flutter: ^2.0.8
 # get:
 
 dev_dependencies:
