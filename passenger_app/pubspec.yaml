@@ -39,6 +39,7 @@ dependencies:
   flutter_multi_formatter:
   pinput:
   google_maps_flutter: ^2.0.8
+  sliding_up_panel: ^2.0.0+1
 # get:
 
 dev_dependencies:
