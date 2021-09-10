@@ -98,6 +98,11 @@ class CustomTextField extends StatelessWidget {
             prefixIconConstraints: BoxConstraints(
               minWidth: 38,
             ),
+            suffixIcon: suffix,
+            suffixIconConstraints: BoxConstraints(
+              // ignore: unnecessary_null_comparison
+              minWidth: suffix == null ? 0 : 38,
+            ),
           ),
         ),
       ),

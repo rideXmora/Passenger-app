@@ -172,6 +172,7 @@ class _MapScreenState extends State<MapScreen> {
               ),
             ),
             SecondaryButton(
+              width: MediaQuery.of(context).size.width * 0.4,
               onPressed: () {},
               loading: loading,
               text: "Confirm",

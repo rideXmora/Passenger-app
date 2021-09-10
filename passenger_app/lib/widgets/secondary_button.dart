@@ -9,6 +9,8 @@ class SecondaryButton extends StatelessWidget {
     this.loading = false,
     required this.boxColor,
     required this.shadowColor,
+    required this.width,
+    this.height = 40,
   });
 
   final onPressed;
@@ -16,12 +18,14 @@ class SecondaryButton extends StatelessWidget {
   final bool loading;
   final Color boxColor;
   final Color shadowColor;
+  final double width;
+  final double height;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 40,
-      width: MediaQuery.of(context).size.width * 0.4,
+      height: height,
+      width: width,
       decoration: BoxDecoration(
         boxShadow: <BoxShadow>[
           BoxShadow(
