@@ -25,9 +25,31 @@ final CameraPosition _kGooglePlex = CameraPosition(
   zoom: 14.4746,
 );
 
-bool loading = false;
-
 class _MapScreenState extends State<MapScreen> {
+  bool loading = false;
+  TextEditingController paymentMethod = TextEditingController();
+  int slectedMethod = 0;
+  List<Map<String, dynamic>> methods = [
+    {
+      "Icon": Icons.money,
+      "method": "Cash Payment",
+      "index": 0,
+    },
+    {
+      "Icon": Icons.credit_card,
+      "method": "Card Payment",
+      "index": 1,
+    }
+  ];
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      paymentMethod.text = methods[0]["method"];
+      slectedMethod = 0;
+    });
+  }
+
   Widget _floatingCollapsed() {
     return Container(
       decoration: BoxDecoration(
@@ -96,41 +118,58 @@ class _MapScreenState extends State<MapScreen> {
         padding: const EdgeInsets.all(15),
         child: Column(
           children: [
-            SingleChildScrollView(
-              child: VehicleSelectionRadioButton(),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.money,
-                    color: primaryColor,
-                    size: 35,
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Text(
-                        "Cash Payment",
-                        style: TextStyle(
-                          color: primaryColorWhite,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Icon(
-                    Icons.keyboard_arrow_right,
-                    color: primaryColorWhite,
-                    size: 35,
-                  ),
-                ],
+            Expanded(
+              child: SingleChildScrollView(
+                child: VehicleSelectionRadioButton(),
               ),
             ),
-            SizedBox(
-              height: 10,
+            Container(
+              height: 40,
+              child: TextField(
+                readOnly: true,
+                style: TextStyle(
+                  color: primaryColorWhite,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+                controller: paymentMethod,
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.only(top: 8),
+                  prefixIcon: Icon(
+                    methods[slectedMethod]["Icon"],
+                    color: primaryColor,
+                  ),
+                  suffixIcon: PopupMenuButton<String>(
+                    padding: EdgeInsets.all(0),
+                    icon: Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      color: primaryColorWhite,
+                    ),
+                    onSelected: (String value) {
+                      setState(() {
+                        debugPrint(value);
+                        paymentMethod.text =
+                            methods[int.parse(value)]["method"];
+                        slectedMethod = int.parse(value);
+                      });
+                    },
+                    itemBuilder: (BuildContext context) {
+                      return methods.map<PopupMenuItem<String>>((Map method) {
+                        return PopupMenuItem(
+                            child: Text(method["method"]),
+                            value: method["index"].toString());
+                      }).toList();
+                    },
+                  ),
+                  suffixIconConstraints: BoxConstraints(
+                    minWidth: 0,
+                  ),
+                  prefixIconConstraints: BoxConstraints(
+                    minWidth: 20,
+                  ),
+                ),
+              ),
             ),
             SecondaryButton(
               onPressed: () {},
