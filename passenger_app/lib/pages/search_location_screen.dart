@@ -5,8 +5,10 @@ import 'package:passenger_app/widgets/custom_text_field.dart';
 import 'package:passenger_app/widgets/previous_location.dart';
 
 class SearchLocationScreen extends StatefulWidget {
-  SearchLocationScreen({Key? key, required this.onBack}) : super(key: key);
+  SearchLocationScreen({Key? key, required this.onBack, required this.toMap})
+      : super(key: key);
   final onBack;
+  final toMap;
   @override
   _SearchLocationScreenState createState() => _SearchLocationScreenState();
 }
@@ -127,38 +129,41 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
               ),
             ),
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20),
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 37, right: 27),
-                    child: Column(
-                      children: [
-                        PreviousLocation(
-                          icon: Icons.home_rounded,
-                          divider: true,
-                          title: "Home",
-                          subTitle: "Anandarama Rd, Moratuwa.",
-                        ),
-                        PreviousLocation(
-                          icon: Icons.history,
-                          divider: true,
-                          title: "Katubedda Bus Stop",
-                          subTitle: "Anandarama Rd, Moratuwa.",
-                        ),
-                        PreviousLocation(
-                          icon: Icons.history,
-                          divider: true,
-                          title: "Katubedda Bus Stop",
-                          subTitle: "Anandarama Rd, Moratuwa.",
-                        ),
-                        PreviousLocation(
-                          icon: Icons.history,
-                          divider: true,
-                          title: "Katubedda Bus Stop",
-                          subTitle: "Anandarama Rd, Moratuwa.",
-                        ),
-                      ],
+              child: GestureDetector(
+                onTap: widget.toMap,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 37, right: 27),
+                      child: Column(
+                        children: [
+                          PreviousLocation(
+                            icon: Icons.home_rounded,
+                            divider: true,
+                            title: "Home",
+                            subTitle: "Anandarama Rd, Moratuwa.",
+                          ),
+                          PreviousLocation(
+                            icon: Icons.history,
+                            divider: true,
+                            title: "Katubedda Bus Stop",
+                            subTitle: "Anandarama Rd, Moratuwa.",
+                          ),
+                          PreviousLocation(
+                            icon: Icons.history,
+                            divider: true,
+                            title: "Katubedda Bus Stop",
+                            subTitle: "Anandarama Rd, Moratuwa.",
+                          ),
+                          PreviousLocation(
+                            icon: Icons.history,
+                            divider: true,
+                            title: "Katubedda Bus Stop",
+                            subTitle: "Anandarama Rd, Moratuwa.",
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

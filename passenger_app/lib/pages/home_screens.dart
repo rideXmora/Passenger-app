@@ -16,6 +16,7 @@ class HomeScreens extends StatefulWidget {
 
 TextEditingController whereController = TextEditingController();
 bool search = false;
+bool map = false;
 
 class _HomeScreensState extends State<HomeScreens> {
   @override
@@ -38,9 +39,22 @@ class _HomeScreensState extends State<HomeScreens> {
                     search = false;
                   });
                 },
+                toMap: () {
+                  debugPrint("s");
+                  setState(() {
+                    map = true;
+                  });
+                },
               )
             : Container(),
-        MapScreen(onTap: () {})
+        map
+            ? MapScreen(onBack: () {
+                debugPrint("s");
+                setState(() {
+                  map = false;
+                });
+              })
+            : Container(),
       ],
     );
   }

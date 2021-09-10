@@ -322,16 +322,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           loading = true;
                         });
                         if (edit) {
-                          setState(() {
-                            edit = false;
+                          Future.delayed(Duration(seconds: 2)).then((value) {
+                            setState(() {
+                              loading = false;
+                              edit = false;
+                            });
                           });
                         }
-
-                        Future.delayed(Duration(seconds: 2)).then((value) {
-                          setState(() {
-                            loading = false;
-                          });
-                        });
                       }
                     },
                     text: edit ? "Update" : "Sign out",

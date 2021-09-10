@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:passenger_app/pages/getting_started_screen.dart';
 import 'package:passenger_app/pages/registration_screen.dart';
+import 'package:passenger_app/pages/splash_screen.dart';
 import 'package:passenger_app/theme/colors.dart';
 
 void main() {
@@ -29,7 +30,7 @@ class MyApp extends StatelessWidget {
         backgroundColor: primaryColorWhite,
       ),
       //home: GettingStartedScreen(),
-      home: RegistrationScreen(phoneNo: "+94123456789"),
+      home: SplashScreen(),
     );
   }
 }

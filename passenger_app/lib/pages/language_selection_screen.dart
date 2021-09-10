@@ -1,12 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:passenger_app/pages/getting_started_screen.dart';
 import 'package:passenger_app/theme/colors.dart';
+import 'package:passenger_app/widgets/main_button.dart';
 
 class LanguageSelectionScreen extends StatelessWidget {
   const LanguageSelectionScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: primaryColorWhite,
       body: SafeArea(
@@ -40,6 +44,23 @@ class LanguageSelectionScreen extends StatelessWidget {
             ),
             Center(
               child: LanguageSelectionRadioButton(),
+            ),
+            SizedBox(
+              height: 90,
+            ),
+            MainButton(
+              width: 200,
+              height: height,
+              onPressed: () async {
+                // Navigator.of(context).push(MaterialPageRoute(
+                //     builder: (BuildContext context) =>
+                //         RegistrationScreen(phoneNo: "+94123456789")));
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => GettingStartedScreen()));
+              },
+              text: "CONTINUE",
+              boxColor: primaryColorDark,
+              shadowColor: primaryColorDark,
             ),
           ],
         ),

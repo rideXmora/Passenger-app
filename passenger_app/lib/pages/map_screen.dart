@@ -11,9 +11,9 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 class MapScreen extends StatefulWidget {
   MapScreen({
     Key? key,
-    required this.onTap,
+    required this.onBack,
   }) : super(key: key);
-  final onTap;
+  final onBack;
   @override
   _MapScreenState createState() => _MapScreenState();
 }
@@ -202,7 +202,13 @@ class _MapScreenState extends State<MapScreen> {
           ),
         ),
         centerTitle: true,
-        leading: Container(),
+        leading: GestureDetector(
+          onTap: widget.onBack,
+          child: Icon(
+            Icons.keyboard_arrow_left_sharp,
+            size: 30,
+          ),
+        ),
       ),
       body: SafeArea(
         child: Stack(
