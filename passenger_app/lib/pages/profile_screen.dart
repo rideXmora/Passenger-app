@@ -6,7 +6,8 @@ import 'package:passenger_app/widgets/custom_text_field.dart';
 import 'package:passenger_app/widgets/secondary_button.dart';
 
 class ProfileScreen extends StatefulWidget {
-  ProfileScreen({Key? key}) : super(key: key);
+  ProfileScreen({Key? key, this.onBack}) : super(key: key);
+  final onBack;
 
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
@@ -32,310 +33,322 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    return Scaffold(
-      backgroundColor: primaryColorWhite,
-      appBar: AppBar(
+    return WillPopScope(
+      onWillPop: () async {
+        if (edit) {
+          setState(() {
+            edit = false;
+          });
+        } else if (!edit) {
+          widget.onBack();
+        }
+        return false;
+      },
+      child: Scaffold(
         backgroundColor: primaryColorWhite,
-        title: Text(
-          "Profile",
-          style: TextStyle(
-            color: primaryColorBlack,
-            fontSize: 23,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        centerTitle: true,
-        leading: Container(),
-        actions: [
-          edit
-              ? Container()
-              : Padding(
-                  padding: const EdgeInsets.only(
-                    right: 10,
-                    top: 10,
-                    bottom: 10,
-                  ),
-                  child: SecondaryButton(
-                    onPressed: () {
-                      setState(() {
-                        edit = !edit;
-                      });
-                      debugPrint(edit.toString());
-                    },
-                    text: "Edit",
-                    boxColor: primaryColorDark,
-                    shadowColor: primaryColorDark.withOpacity(0),
-                    width: 100,
-                  ),
-                ),
-        ],
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 30,
-              vertical: 30,
+        appBar: AppBar(
+          backgroundColor: primaryColorWhite,
+          title: Text(
+            "Profile",
+            style: TextStyle(
+              color: primaryColorBlack,
+              fontSize: 23,
+              fontWeight: FontWeight.w700,
             ),
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 17,
-                ),
-                Center(
-                  child: Container(
-                    height: 115,
-                    width: 115,
-                    child: Stack(
-                      children: [
-                        // * Image
-                        Container(
-                          width: 115,
-                          height: 115,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(100),
-                            image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: AssetImage(
-                                  "assets/images/images/user_icon.png"),
-                            ),
-                          ),
-                        ),
-                        edit
-                            ? Align(
-                                alignment: Alignment.bottomRight,
-                                child: Container(
-                                  width: 35,
-                                  height: 35,
-                                  decoration: BoxDecoration(
-                                    color: primaryColor,
-                                    borderRadius: BorderRadius.circular(200),
-                                  ),
-                                  child: IconButton(
-                                    icon: Icon(Icons.camera_alt),
-                                    color: Colors.white,
-                                    iconSize: 18,
-                                    onPressed: () {
-                                      //_pickImageFromToProfile(context);
-                                    },
-                                  ),
-                                ),
-                              )
-                            : Container(),
-                      ],
+          ),
+          centerTitle: true,
+          leading: Container(),
+          actions: [
+            edit
+                ? Container()
+                : Padding(
+                    padding: const EdgeInsets.only(
+                      right: 10,
+                      top: 10,
+                      bottom: 10,
                     ),
-                  ),
-                ),
-                SizedBox(
-                  height: 34,
-                ),
-                CustomTextField(
-                  readOnly: edit ? false : true,
-                  height: height,
-                  width: width,
-                  controller: nameController,
-                  hintText: "Name",
-                  prefixBoxColor: primaryColorBlack,
-                  prefixIcon: Icon(
-                    Icons.person,
-                    color: primaryColorLight,
-                  ),
-                  dropDown: SizedBox(),
-                  onChanged: () {},
-                  phoneNumberPrefix: SizedBox(),
-                  suffix: SizedBox(),
-                  inputFormatters: [],
-                ),
-                SizedBox(
-                  height: 16,
-                ),
-                CustomTextField(
-                  readOnly: edit ? false : true,
-                  height: height,
-                  width: width,
-                  controller: emailController,
-                  hintText: "Email",
-                  prefixBoxColor: primaryColorBlack,
-                  prefixIcon: Icon(
-                    Icons.email,
-                    color: primaryColorLight,
-                  ),
-                  dropDown: SizedBox(),
-                  onChanged: () {},
-                  phoneNumberPrefix: SizedBox(),
-                  suffix: SizedBox(),
-                  inputFormatters: [],
-                ),
-                edit
-                    ? Container()
-                    : Column(
-                        children: [
-                          SizedBox(
-                            height: 16,
-                          ),
-                          CustomTextField(
-                            readOnly: true,
-                            height: height,
-                            width: width,
-                            controller: mobileNumberController,
-                            hintText: "Mobile Number",
-                            prefixBoxColor: primaryColorBlack,
-                            prefixIcon: Icon(
-                              Icons.phone,
-                              color: primaryColorLight,
-                            ),
-                            dropDown: SizedBox(),
-                            keyboardType: TextInputType.number,
-                            onChanged: () {},
-                            phoneNumberPrefixWidth: 110,
-                            inputFormatters: [
-                              MaskedInputFormatter("## ### ####",
-                                  anyCharMatcher: RegExp(r'\d')),
-                            ],
-                            phoneNumberPrefix: Row(
-                              children: [
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                IgnorePointer(
-                                  ignoring: true,
-                                  child: DropdownButton<String>(
-                                    underline: SizedBox(),
-                                    value: dropdownValue,
-                                    icon: Icon(
-                                      Icons.keyboard_arrow_down_rounded,
-                                      color: primaryColorWhite,
-                                    ),
-                                    style: TextStyle(
-                                      color: primaryColorWhite,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                    onChanged: (String? newValue) {
-                                      setState(() {
-                                        dropdownValue = newValue.toString();
-                                      });
-                                    },
-                                    dropdownColor: primaryColorLight,
-                                    items: <String>['+94']
-                                        .map<DropdownMenuItem<String>>(
-                                            (String value) {
-                                      return DropdownMenuItem<String>(
-                                        value: value,
-                                        child: Text(
-                                          value,
-                                          style: TextStyle(
-                                            color: primaryColorWhite,
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                      );
-                                    }).toList(),
-                                  ),
-                                ),
-                                Container(
-                                  margin: const EdgeInsets.only(
-                                      top: 13.0, bottom: 13.0),
-                                  child: VerticalDivider(
-                                    color: primaryColorWhite,
-                                    width: 1,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            suffix: SizedBox(),
-                          ),
-                        ],
-                      ),
-                SizedBox(
-                  height: 16,
-                ),
-                CustomTextField(
-                  readOnly: true,
-                  height: height,
-                  width: width,
-                  controller: languageController,
-                  hintText: "Language",
-                  prefixBoxColor: primaryColorBlack,
-                  prefixIcon: Icon(
-                    Icons.language,
-                    color: primaryColorLight,
-                  ),
-                  dropDown: SizedBox(),
-                  onChanged: () {},
-                  phoneNumberPrefix: SizedBox(),
-                  suffix: IgnorePointer(
-                    ignoring: edit ? false : true,
-                    child: PopupMenuButton<String>(
-                      padding: EdgeInsets.all(0),
-                      icon: Icon(
-                        Icons.keyboard_arrow_down_rounded,
-                        color: primaryColorWhite,
-                      ),
-                      onSelected: (String value) {
+                    child: SecondaryButton(
+                      onPressed: () {
                         setState(() {
-                          debugPrint(value);
-                          languageController.text = value;
+                          edit = !edit;
                         });
+                        debugPrint(edit.toString());
                       },
-                      itemBuilder: (BuildContext context) {
-                        return languageList
-                            .map<PopupMenuItem<String>>((String language) {
-                          return PopupMenuItem(
-                              child: Text(language), value: language);
-                        }).toList();
-                      },
+                      text: "Edit",
+                      boxColor: primaryColorDark,
+                      shadowColor: primaryColorDark.withOpacity(0),
+                      width: 100,
                     ),
                   ),
-                  inputFormatters: [],
-                ),
-                edit
-                    ? Container()
-                    : Column(
+          ],
+        ),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 30,
+                vertical: 30,
+              ),
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 17,
+                  ),
+                  Center(
+                    child: Container(
+                      height: 115,
+                      width: 115,
+                      child: Stack(
                         children: [
-                          SizedBox(
-                            height: 16,
-                          ),
-                          GestureDetector(
-                            onTap: () {},
-                            child: Text(
-                              "View card details",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: primaryColor,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
+                          // * Image
+                          Container(
+                            width: 115,
+                            height: 115,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(100),
+                              image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: AssetImage(
+                                    "assets/images/images/user_icon.png"),
                               ),
                             ),
                           ),
+                          edit
+                              ? Align(
+                                  alignment: Alignment.bottomRight,
+                                  child: Container(
+                                    width: 35,
+                                    height: 35,
+                                    decoration: BoxDecoration(
+                                      color: primaryColor,
+                                      borderRadius: BorderRadius.circular(200),
+                                    ),
+                                    child: IconButton(
+                                      icon: Icon(Icons.camera_alt),
+                                      color: Colors.white,
+                                      iconSize: 18,
+                                      onPressed: () {
+                                        //_pickImageFromToProfile(context);
+                                      },
+                                    ),
+                                  ),
+                                )
+                              : Container(),
                         ],
                       ),
-                SizedBox(
-                  height: 32,
-                ),
-                SecondaryButton(
-                    loading: loading,
-                    onPressed: () {
-                      if (!loading) {
-                        setState(() {
-                          loading = true;
-                        });
-                        if (edit) {
-                          Future.delayed(Duration(seconds: 2)).then((value) {
-                            setState(() {
-                              loading = false;
-                              edit = false;
-                            });
+                    ),
+                  ),
+                  SizedBox(
+                    height: 34,
+                  ),
+                  CustomTextField(
+                    readOnly: edit ? false : true,
+                    height: height,
+                    width: width,
+                    controller: nameController,
+                    hintText: "Name",
+                    prefixBoxColor: primaryColorBlack,
+                    prefixIcon: Icon(
+                      Icons.person,
+                      color: primaryColorLight,
+                    ),
+                    dropDown: SizedBox(),
+                    onChanged: () {},
+                    phoneNumberPrefix: SizedBox(),
+                    suffix: SizedBox(),
+                    inputFormatters: [],
+                  ),
+                  SizedBox(
+                    height: 16,
+                  ),
+                  CustomTextField(
+                    readOnly: edit ? false : true,
+                    height: height,
+                    width: width,
+                    controller: emailController,
+                    hintText: "Email",
+                    prefixBoxColor: primaryColorBlack,
+                    prefixIcon: Icon(
+                      Icons.email,
+                      color: primaryColorLight,
+                    ),
+                    dropDown: SizedBox(),
+                    onChanged: () {},
+                    phoneNumberPrefix: SizedBox(),
+                    suffix: SizedBox(),
+                    inputFormatters: [],
+                  ),
+                  edit
+                      ? Container()
+                      : Column(
+                          children: [
+                            SizedBox(
+                              height: 16,
+                            ),
+                            CustomTextField(
+                              readOnly: true,
+                              height: height,
+                              width: width,
+                              controller: mobileNumberController,
+                              hintText: "Mobile Number",
+                              prefixBoxColor: primaryColorBlack,
+                              prefixIcon: Icon(
+                                Icons.phone,
+                                color: primaryColorLight,
+                              ),
+                              dropDown: SizedBox(),
+                              keyboardType: TextInputType.number,
+                              onChanged: () {},
+                              phoneNumberPrefixWidth: 110,
+                              inputFormatters: [
+                                MaskedInputFormatter("## ### ####",
+                                    anyCharMatcher: RegExp(r'\d')),
+                              ],
+                              phoneNumberPrefix: Row(
+                                children: [
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  IgnorePointer(
+                                    ignoring: true,
+                                    child: DropdownButton<String>(
+                                      underline: SizedBox(),
+                                      value: dropdownValue,
+                                      icon: Icon(
+                                        Icons.keyboard_arrow_down_rounded,
+                                        color: primaryColorWhite,
+                                      ),
+                                      style: TextStyle(
+                                        color: primaryColorWhite,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                      onChanged: (String? newValue) {
+                                        setState(() {
+                                          dropdownValue = newValue.toString();
+                                        });
+                                      },
+                                      dropdownColor: primaryColorLight,
+                                      items: <String>['+94']
+                                          .map<DropdownMenuItem<String>>(
+                                              (String value) {
+                                        return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Text(
+                                            value,
+                                            style: TextStyle(
+                                              color: primaryColorWhite,
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        );
+                                      }).toList(),
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: const EdgeInsets.only(
+                                        top: 13.0, bottom: 13.0),
+                                    child: VerticalDivider(
+                                      color: primaryColorWhite,
+                                      width: 1,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              suffix: SizedBox(),
+                            ),
+                          ],
+                        ),
+                  SizedBox(
+                    height: 16,
+                  ),
+                  CustomTextField(
+                    readOnly: true,
+                    height: height,
+                    width: width,
+                    controller: languageController,
+                    hintText: "Language",
+                    prefixBoxColor: primaryColorBlack,
+                    prefixIcon: Icon(
+                      Icons.language,
+                      color: primaryColorLight,
+                    ),
+                    dropDown: SizedBox(),
+                    onChanged: () {},
+                    phoneNumberPrefix: SizedBox(),
+                    suffix: IgnorePointer(
+                      ignoring: edit ? false : true,
+                      child: PopupMenuButton<String>(
+                        padding: EdgeInsets.all(0),
+                        icon: Icon(
+                          Icons.keyboard_arrow_down_rounded,
+                          color: primaryColorWhite,
+                        ),
+                        onSelected: (String value) {
+                          setState(() {
+                            debugPrint(value);
+                            languageController.text = value;
                           });
+                        },
+                        itemBuilder: (BuildContext context) {
+                          return languageList
+                              .map<PopupMenuItem<String>>((String language) {
+                            return PopupMenuItem(
+                                child: Text(language), value: language);
+                          }).toList();
+                        },
+                      ),
+                    ),
+                    inputFormatters: [],
+                  ),
+                  edit
+                      ? Container()
+                      : Column(
+                          children: [
+                            SizedBox(
+                              height: 16,
+                            ),
+                            GestureDetector(
+                              onTap: () {},
+                              child: Text(
+                                "View card details",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: primaryColor,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                  SizedBox(
+                    height: 32,
+                  ),
+                  SecondaryButton(
+                      loading: loading,
+                      onPressed: () {
+                        if (!loading) {
+                          setState(() {
+                            loading = true;
+                          });
+                          if (edit) {
+                            Future.delayed(Duration(seconds: 2)).then((value) {
+                              setState(() {
+                                loading = false;
+                                edit = false;
+                              });
+                            });
+                          }
                         }
-                      }
-                    },
-                    text: edit ? "Update" : "Sign out",
-                    boxColor: primaryColorDark,
-                    shadowColor: primaryColorDark.withOpacity(0),
-                    width: width * 0.5)
-              ],
+                      },
+                      text: edit ? "Update" : "Sign out",
+                      boxColor: primaryColorDark,
+                      shadowColor: primaryColorDark.withOpacity(0),
+                      width: width * 0.5)
+                ],
+              ),
             ),
           ),
         ),

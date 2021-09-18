@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:passenger_app/pages/home_screen.dart';
 import 'package:passenger_app/pages/map_screen.dart';
 import 'package:passenger_app/pages/search_location_screen.dart';
@@ -21,41 +22,54 @@ bool map = false;
 class _HomeScreensState extends State<HomeScreens> {
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        HomeScreen(
-          onTap: () {
-            debugPrint("s");
-            setState(() {
-              search = true;
-            });
-          },
-        ),
-        search
-            ? SearchLocationScreen(
-                onBack: () {
+    return WillPopScope(
+      onWillPop: () async {
+        if (map) {
+          setState(() {
+            map = false;
+          });
+        } else if (search) {
+          setState(() {
+            search = false;
+          });
+        } else {
+          SystemNavigator.pop();
+        }
+        return false;
+      },
+      child: Stack(
+        children: [
+          HomeScreen(
+            onTap: () {
+              setState(() {
+                search = true;
+              });
+            },
+          ),
+          search
+              ? SearchLocationScreen(
+                  onBack: () {
+                    setState(() {
+                      search = false;
+                    });
+                  },
+                  toMap: () {
+                    setState(() {
+                      map = true;
+                    });
+                  },
+                )
+              : Container(),
+          map
+              ? MapScreen(onBack: () {
                   debugPrint("s");
                   setState(() {
-                    search = false;
+                    map = false;
                   });
-                },
-                toMap: () {
-                  debugPrint("s");
-                  setState(() {
-                    map = true;
-                  });
-                },
-              )
-            : Container(),
-        map
-            ? MapScreen(onBack: () {
-                debugPrint("s");
-                setState(() {
-                  map = false;
-                });
-              })
-            : Container(),
-      ],
+                })
+              : Container(),
+        ],
+      ),
     );
   }
 }

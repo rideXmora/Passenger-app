@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:passenger_app/pages/bottom_navigation_bar_handler.dart';
 import 'package:passenger_app/pages/getting_started_screen.dart';
 import 'package:passenger_app/pages/registration_screen.dart';
 import 'package:passenger_app/pages/splash_screen.dart';
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
         backgroundColor: primaryColorWhite,
       ),
       //home: GettingStartedScreen(),
-      home: SplashScreen(),
+      home: BottomNavHandler(),
     );
   }
 }

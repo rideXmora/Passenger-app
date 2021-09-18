@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:passenger_app/theme/colors.dart';
 
 class TripHistoryScreen extends StatefulWidget {
-  TripHistoryScreen({Key? key}) : super(key: key);
-
+  TripHistoryScreen({Key? key, this.onBack}) : super(key: key);
+  final onBack;
   @override
   _TripHistoryScreenState createState() => _TripHistoryScreenState();
 }
@@ -14,36 +14,43 @@ class _TripHistoryScreenState extends State<TripHistoryScreen> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    return Scaffold(
-      backgroundColor: primaryColorWhite,
-      appBar: AppBar(
+    return WillPopScope(
+      onWillPop: () async {
+        widget.onBack();
+
+        return false;
+      },
+      child: Scaffold(
         backgroundColor: primaryColorWhite,
-        title: Text(
-          "Trip history",
-          style: TextStyle(
-            color: primaryColorBlack,
-            fontSize: 23,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        centerTitle: true,
-        leading: Container(),
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 30,
+        appBar: AppBar(
+          backgroundColor: primaryColorWhite,
+          title: Text(
+            "Trip history",
+            style: TextStyle(
+              color: primaryColorBlack,
+              fontSize: 23,
+              fontWeight: FontWeight.w700,
             ),
+          ),
+          centerTitle: true,
+          leading: Container(),
+        ),
+        body: SafeArea(
+          child: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.only(top: 16),
-              child: Column(
-                children: [
-                  HistoryDataBox(),
-                  HistoryDataBox(),
-                  HistoryDataBox(),
-                  HistoryDataBox(),
-                ],
+              padding: const EdgeInsets.symmetric(
+                horizontal: 30,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.only(top: 16),
+                child: Column(
+                  children: [
+                    HistoryDataBox(),
+                    HistoryDataBox(),
+                    HistoryDataBox(),
+                    HistoryDataBox(),
+                  ],
+                ),
               ),
             ),
           ),

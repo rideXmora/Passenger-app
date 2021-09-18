@@ -22,9 +22,23 @@ class _BottomNavHandlerState extends State<BottomNavHandler> {
   @override
   Widget build(BuildContext context) {
     List<Widget> pages = [
-      ProfileScreen(),
+      ProfileScreen(
+        onBack: () {
+          setState(() {
+            bottomBarIndex = 1;
+            secondIndex = 1;
+          });
+        },
+      ),
       HomeScreens(),
-      TripHistoryScreen(),
+      TripHistoryScreen(
+        onBack: () {
+          setState(() {
+            bottomBarIndex = 1;
+            secondIndex = 1;
+          });
+        },
+      ),
     ];
     return Scaffold(
       resizeToAvoidBottomInset: true,
