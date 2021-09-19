@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:passenger_app/modals/driver.dart';
+import 'package:passenger_app/pages/map_screens/Rate_and_comment.dart';
 import 'package:passenger_app/pages/map_screens/ride.dart';
 import 'package:passenger_app/pages/map_screens/select_Vechicle_Type_FloatingPanel.dart';
 import 'package:passenger_app/pages/map_screens/trip_completed.dart';
@@ -57,6 +58,9 @@ class _MapScreenState extends State<MapScreen> {
   );
 
   TripState tripState = TripState.SELECTVECHICLE;
+
+  int rating = 1;
+  TextEditingController comment = TextEditingController();
 
   @override
   void initState() {
@@ -238,7 +242,45 @@ class _MapScreenState extends State<MapScreen> {
                       });
                     },
                   )
-                : Container(),
+                : tripState == TripState.RATEANDCOMMENT
+                    ? RateAndComment(
+                        loading: loading,
+                        onPressed: () {
+                          setState(() {
+                            tripState = TripState.NOTRIP;
+                            rating = 0;
+                            comment.text = "";
+                          });
+                        },
+                        rating: rating,
+                        onRatingChanged1: () {
+                          setState(() {
+                            rating = 1;
+                          });
+                        },
+                        onRatingChanged2: () {
+                          setState(() {
+                            rating = 2;
+                          });
+                        },
+                        onRatingChanged3: () {
+                          setState(() {
+                            rating = 3;
+                          });
+                        },
+                        onRatingChanged4: () {
+                          setState(() {
+                            rating = 4;
+                          });
+                        },
+                        onRatingChanged5: () {
+                          setState(() {
+                            rating = 5;
+                          });
+                        },
+                        comment: comment,
+                      )
+                    : Container(),
           ],
         ),
       ),
