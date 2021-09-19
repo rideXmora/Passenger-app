@@ -245,7 +245,7 @@ class HistoryDataBox extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.credit_card, color: primaryColor),
+                      Icon(Icons.credit_card, color: primaryColorLight),
                       SizedBox(
                         width: 5,
                       ),
@@ -282,7 +282,7 @@ class SimpleIconTextBox extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, color: primaryColor),
+        Icon(icon, color: primaryColorLight),
         SizedBox(
           width: 5,
         ),

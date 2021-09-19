@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:passenger_app/pages/home_screen.dart';
 import 'package:passenger_app/pages/map_screens/map_screen.dart';
+import 'package:passenger_app/pages/map_screens/trip_state_enum.dart';
 import 'package:passenger_app/pages/search_location_screen.dart';
 import 'package:passenger_app/theme/colors.dart';
 import 'package:passenger_app/widgets/custom_text_field.dart';
@@ -24,6 +25,7 @@ class _HomeScreensState extends State<HomeScreens> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
+        // if (map && tripState == TripState.TRIPCOMPLETED) {
         if (map) {
           setState(() {
             map = false;

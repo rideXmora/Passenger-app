@@ -7,6 +7,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:passenger_app/modals/driver.dart';
 import 'package:passenger_app/pages/map_screens/ride.dart';
 import 'package:passenger_app/pages/map_screens/select_Vechicle_Type_FloatingPanel.dart';
+import 'package:passenger_app/pages/map_screens/trip_completed.dart';
 import 'package:passenger_app/pages/map_screens/trip_state_enum.dart';
 import 'package:passenger_app/theme/colors.dart';
 import 'package:passenger_app/widgets/secondary_button.dart';
@@ -226,6 +227,16 @@ class _MapScreenState extends State<MapScreen> {
                             tripState == TripState.GOINGTODESTINATION
                         ? 270
                         : 360,
+                  )
+                : Container(),
+            tripState == TripState.TRIPCOMPLETED
+                ? TripCompleted(
+                    loading: loading,
+                    onPressed: () {
+                      setState(() {
+                        tripState = TripState.RATEANDCOMMENT;
+                      });
+                    },
                   )
                 : Container(),
           ],
