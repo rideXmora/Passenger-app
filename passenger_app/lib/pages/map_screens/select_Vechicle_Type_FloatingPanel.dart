@@ -12,12 +12,15 @@ class SelectVechicleTypeFloatingPanel extends StatelessWidget {
     required this.slectedMethod,
     this.onSelect,
     required this.loading,
+    this.onPressed,
   }) : super(key: key);
 
+  final onPressed;
   final TextEditingController paymentMethod;
   final List<Map<String, dynamic>> methods;
   final int slectedMethod;
   final onSelect;
+
   final bool loading;
 
   @override
@@ -91,7 +94,7 @@ class SelectVechicleTypeFloatingPanel extends StatelessWidget {
             ),
             SecondaryButton(
               width: MediaQuery.of(context).size.width * 0.4,
-              onPressed: () {},
+              onPressed: onPressed,
               loading: loading,
               text: "Confirm",
               boxColor: primaryColorLight,

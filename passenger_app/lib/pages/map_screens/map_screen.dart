@@ -4,6 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:passenger_app/modals/driver.dart';
+import 'package:passenger_app/pages/map_screens/ride.dart';
+import 'package:passenger_app/pages/map_screens/select_Vechicle_Type_FloatingPanel.dart';
+import 'package:passenger_app/pages/map_screens/trip_state_enum.dart';
 import 'package:passenger_app/theme/colors.dart';
 import 'package:passenger_app/widgets/secondary_button.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -44,6 +48,15 @@ class _MapScreenState extends State<MapScreen> {
     }
   ];
 
+  Driver driver = Driver(
+    image: "a",
+    name: "Avishka Rathnavibushana",
+    number: "+94711737706",
+    vechicleType: "Toyota Corolla",
+  );
+
+  TripState tripState = TripState.SELECTVECHICLE;
+
   @override
   void initState() {
     super.initState();
@@ -53,7 +66,7 @@ class _MapScreenState extends State<MapScreen> {
     });
   }
 
-  Widget _floatingCollapsed() {
+  Widget _floatingCollapsed(TripState state) {
     return Container(
       decoration: BoxDecoration(
         color: primaryColorDark,
@@ -82,7 +95,15 @@ class _MapScreenState extends State<MapScreen> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: Text(
-                    "Confirm ride",
+                    state == TripState.SELECTVECHICLE
+                        ? "Confirm ride"
+                        : state == TripState.FINDINGRIDE
+                            ? "Finding ride"
+                            : state == TripState.DRIVERCOMMING
+                                ? "Driver is comming"
+                                : state == TripState.GOINGTODESTINATION
+                                    ? "Going to destination"
+                                    : "",
                     style: TextStyle(
                       color: primaryColorWhite,
                       fontSize: 18,
@@ -139,16 +160,74 @@ class _MapScreenState extends State<MapScreen> {
                 ),
               ],
             ),
-            SlidingUpPanel(
-              renderPanelSheet: false,
-              panel: FindingRideFloatingPanel(
-                loading: loading,
-              ),
-              collapsed: _floatingCollapsed(),
-              backdropColor: Colors.transparent,
-              defaultPanelState: PanelState.OPEN,
-              maxHeight: 360,
-            )
+            tripState == TripState.SELECTVECHICLE ||
+                    tripState == TripState.FINDINGRIDE ||
+                    tripState == TripState.DRIVERCOMMING ||
+                    tripState == TripState.GOINGTODESTINATION
+                ? SlidingUpPanel(
+                    renderPanelSheet: false,
+                    panel: tripState == TripState.SELECTVECHICLE
+                        ? SelectVechicleTypeFloatingPanel(
+                            paymentMethod: paymentMethod,
+                            methods: methods,
+                            slectedMethod: slectedMethod,
+                            loading: loading,
+                            onSelect: (String value) {
+                              setState(() {
+                                slectedMethod =
+                                    methods[int.parse(value)]["index"];
+                              });
+                            },
+                            onPressed: () {
+                              setState(() {
+                                tripState = TripState.FINDINGRIDE;
+                              });
+                            },
+                          )
+                        : tripState == TripState.FINDINGRIDE
+                            ? FindingRideFloatingPanel(
+                                loading: loading,
+                                onPressed: () {
+                                  setState(() {
+                                    tripState = TripState.DRIVERCOMMING;
+                                  });
+                                },
+                              )
+                            : tripState == TripState.DRIVERCOMMING
+                                ? RideFloatingPanel(
+                                    driver: driver,
+                                    time: "1 min",
+                                    tripState: tripState,
+                                    loading: loading,
+                                    onPressed: () {
+                                      setState(() {
+                                        tripState =
+                                            TripState.GOINGTODESTINATION;
+                                      });
+                                    },
+                                  )
+                                : tripState == TripState.GOINGTODESTINATION
+                                    ? RideFloatingPanel(
+                                        driver: driver,
+                                        time: "1 min",
+                                        tripState: tripState,
+                                        loading: loading,
+                                        onPressed: () {
+                                          setState(() {
+                                            tripState = TripState.TRIPCOMPLETED;
+                                          });
+                                        },
+                                      )
+                                    : Container(),
+                    collapsed: _floatingCollapsed(tripState),
+                    backdropColor: Colors.transparent,
+                    defaultPanelState: PanelState.OPEN,
+                    maxHeight: tripState == TripState.DRIVERCOMMING ||
+                            tripState == TripState.GOINGTODESTINATION
+                        ? 270
+                        : 360,
+                  )
+                : Container(),
           ],
         ),
       ),

@@ -7,8 +7,10 @@ class FindingRideFloatingPanel extends StatelessWidget {
   FindingRideFloatingPanel({
     Key? key,
     required this.loading,
+    this.onPressed,
   }) : super(key: key);
 
+  final onPressed;
   final bool loading;
 
   @override
@@ -83,7 +85,7 @@ class FindingRideFloatingPanel extends StatelessWidget {
                 SecondaryButton(
                   height: 40,
                   width: MediaQuery.of(context).size.width * 0.5,
-                  onPressed: () {},
+                  onPressed: onPressed,
                   loading: loading,
                   text: "Cancel ride",
                   boxColor: primaryColorDark,

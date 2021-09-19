@@ -105,7 +105,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             width: 115,
                             height: 115,
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(100),
+                              shape: BoxShape.circle,
                               image: DecorationImage(
                                 fit: BoxFit.cover,
                                 image: AssetImage(
