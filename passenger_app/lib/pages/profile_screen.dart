@@ -5,6 +5,8 @@ import 'package:passenger_app/theme/colors.dart';
 import 'package:passenger_app/widgets/custom_text_field.dart';
 import 'package:passenger_app/widgets/secondary_button.dart';
 
+import 'card_page.dart';
+
 class ProfileScreen extends StatefulWidget {
   ProfileScreen({Key? key, this.onBack}) : super(key: key);
   final onBack;
@@ -310,7 +312,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               height: 16,
                             ),
                             GestureDetector(
-                              onTap: () {},
+                              onTap: () {
+                                debugPrint("saf");
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            MyCardsScreen()));
+                              },
                               child: Text(
                                 "View card details",
                                 textAlign: TextAlign.center,
