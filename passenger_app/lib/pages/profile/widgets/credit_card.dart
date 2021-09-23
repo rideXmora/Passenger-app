@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:passenger_app/pages/card_type.dart';
+import 'package:passenger_app/utils/card_type_enum.dart';
 import 'package:passenger_app/theme/colors.dart';
 import 'package:passenger_app/utils/card_icon.dart';
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:passenger_app/pages/card_type.dart';
+import 'package:passenger_app/utils/card_type_enum.dart';
 
 Widget getCardTypeIcon({CardType? cardType, String? cardNumber}) {
   switch (cardType == null ? getCardType(cardNumber!) : cardType) {

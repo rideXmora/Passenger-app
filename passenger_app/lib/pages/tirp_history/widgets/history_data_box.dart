@@ -1,64 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:passenger_app/theme/colors.dart';
-
-class TripHistoryScreen extends StatefulWidget {
-  TripHistoryScreen({Key? key, this.onBack}) : super(key: key);
-  final onBack;
-  @override
-  _TripHistoryScreenState createState() => _TripHistoryScreenState();
-}
-
-class _TripHistoryScreenState extends State<TripHistoryScreen> {
-  @override
-  Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
-    return WillPopScope(
-      onWillPop: () async {
-        widget.onBack();
-
-        return false;
-      },
-      child: Scaffold(
-        backgroundColor: primaryColorWhite,
-        appBar: AppBar(
-          backgroundColor: primaryColorWhite,
-          title: Text(
-            "Trip history",
-            style: TextStyle(
-              color: primaryColorBlack,
-              fontSize: 23,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          centerTitle: true,
-          leading: Container(),
-        ),
-        body: SafeArea(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 30,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.only(top: 16),
-                child: Column(
-                  children: [
-                    HistoryDataBox(),
-                    HistoryDataBox(),
-                    HistoryDataBox(),
-                    HistoryDataBox(),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
+import 'package:passenger_app/widgets/simple_icon_text_box.dart';
 
 class HistoryDataBox extends StatelessWidget {
   const HistoryDataBox({
@@ -265,36 +207,6 @@ class HistoryDataBox extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class SimpleIconTextBox extends StatelessWidget {
-  const SimpleIconTextBox({
-    Key? key,
-    required this.icon,
-    required this.text,
-  }) : super(key: key);
-  final IconData icon;
-  final String text;
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, color: primaryColorLight),
-        SizedBox(
-          width: 5,
-        ),
-        Text(
-          text,
-          style: TextStyle(
-            color: primaryColorWhite,
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ],
     );
   }
 }

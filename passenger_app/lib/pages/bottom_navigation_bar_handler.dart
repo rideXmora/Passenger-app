@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:passenger_app/pages/search_location_screen.dart';
 import 'package:passenger_app/theme/colors.dart';
-import 'package:passenger_app/pages/home_screens.dart';
-import 'package:passenger_app/pages/profile_screen.dart';
-import 'package:passenger_app/pages/trip_history_screen.dart';
+import 'package:passenger_app/pages/home/home_screens.dart';
+import 'package:passenger_app/pages/profile/pages/profile_screen.dart';
+import 'package:passenger_app/pages/tirp_history/pages/trip_history_screen.dart';
 
 class BottomNavHandler extends StatefulWidget {
   @override

@@ -1,13 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:passenger_app/modals/driver.dart';
-import 'package:passenger_app/pages/map_screens/trip_state_enum.dart';
-import 'package:passenger_app/pages/map_screens/vehicle_Selection_RadioButton.dart';
+import 'package:passenger_app/utils/trip_state_enum.dart';
 import 'package:passenger_app/theme/colors.dart';
-import 'package:passenger_app/widgets/secondary_button.dart';
 import 'package:passenger_app/widgets/secondary_button_with_icon.dart';
-
-import '../trip_history_screen.dart';
+import 'package:passenger_app/widgets/simple_icon_text_box.dart';
 
 class RideFloatingPanel extends StatelessWidget {
   RideFloatingPanel({

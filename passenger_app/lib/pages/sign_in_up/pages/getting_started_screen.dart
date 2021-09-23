@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
-import 'package:passenger_app/pages/mobile_number_verification_screen.dart';
+import 'package:passenger_app/pages/sign_in_up/pages/mobile_number_verification_screen.dart';
 import 'package:passenger_app/theme/colors.dart';
 import 'package:passenger_app/widgets/custom_back_button.dart';
 import 'package:passenger_app/widgets/custom_text_field.dart';

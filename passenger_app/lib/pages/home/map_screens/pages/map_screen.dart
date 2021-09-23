@@ -5,16 +5,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:passenger_app/modals/driver.dart';
-import 'package:passenger_app/pages/map_screens/Rate_and_comment.dart';
-import 'package:passenger_app/pages/map_screens/ride.dart';
-import 'package:passenger_app/pages/map_screens/select_Vechicle_Type_FloatingPanel.dart';
-import 'package:passenger_app/pages/map_screens/trip_completed.dart';
-import 'package:passenger_app/pages/map_screens/trip_state_enum.dart';
+import 'package:passenger_app/pages/home/map_screens/widgets/floating_panel/finding_ride_floating_panel.dart';
+import 'package:passenger_app/pages/home/map_screens/widgets/floating_panel/ride_floating_panel.dart';
+import 'package:passenger_app/pages/home/map_screens/widgets/floating_panel/select_vechicle_type_floating_panel.dart';
+import 'package:passenger_app/pages/home/map_screens/widgets/pop_up/Rate_and_comment.dart';
+import 'package:passenger_app/pages/home/map_screens/widgets/pop_up/trip_completed.dart';
+import 'package:passenger_app/utils/trip_state_enum.dart';
 import 'package:passenger_app/theme/colors.dart';
-import 'package:passenger_app/widgets/secondary_button.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
-
-import 'finding_Ride_FloatingPanel.dart';
 
 class MapScreen extends StatefulWidget {
   MapScreen({
@@ -126,8 +124,8 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
+    // double width = MediaQuery.of(context).size.width;
+    // double height = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: primaryColorWhite,
       appBar: AppBar(

@@ -1,4 +1,4 @@
-import 'package:passenger_app/pages/card_type.dart';
+import 'package:passenger_app/utils/card_type_enum.dart';
 
 class CreditCard {
   String cardNumber;

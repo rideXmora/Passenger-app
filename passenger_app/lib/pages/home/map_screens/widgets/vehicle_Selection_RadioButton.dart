@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:passenger_app/pages/map_screens/vechicle_box.dart';
+import 'package:passenger_app/pages/home/map_screens/widgets/vechicle_box.dart';
 
 class VehicleSelectionRadioButton extends StatefulWidget {
   VehicleSelectionRadioButton({Key? key}) : super(key: key);

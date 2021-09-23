@@ -31,6 +31,7 @@ class SecondaryButtonWithIcon extends StatelessWidget {
       height: height,
       //width: width,
       decoration: BoxDecoration(
+        shape: BoxShape.circle,
         boxShadow: <BoxShadow>[
           BoxShadow(
             color: shadowColor.withOpacity(0.06),
@@ -49,28 +50,36 @@ class SecondaryButtonWithIcon extends StatelessWidget {
                 ),
               )
             : Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: text != ""
+                    ? MainAxisAlignment.spaceEvenly
+                    : MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    text,
-                    style: TextStyle(
-                      color: primaryColorWhite,
-                      fontSize: 24,
-                      fontWeight: FontWeight.w700,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  SizedBox(
-                    width: 5,
-                  ),
+                  text != ""
+                      ? Text(
+                          text,
+                          style: TextStyle(
+                            color: primaryColorWhite,
+                            fontSize: 24,
+                            fontWeight: FontWeight.w700,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        )
+                      : Container(),
+                  text != ""
+                      ? SizedBox(
+                          width: 5,
+                        )
+                      : Container(),
                   Icon(
                     icon,
                     color: iconColor,
                   )
                 ],
               ),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        shape: text != ""
+            ? RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))
+            : RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
         color: boxColor,
         textColor: primaryColorWhite,
         onPressed: loading ? () {} : onPressed,

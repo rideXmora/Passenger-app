@@ -3,13 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:passenger_app/controllers/controller.dart';
-import 'package:passenger_app/pages/home_screen.dart';
-import 'package:passenger_app/pages/map_screens/map_screen.dart';
-import 'package:passenger_app/pages/map_screens/trip_state_enum.dart';
-import 'package:passenger_app/pages/search_location_screen.dart';
-import 'package:passenger_app/theme/colors.dart';
-import 'package:passenger_app/widgets/custom_text_field.dart';
-import 'package:passenger_app/widgets/previous_location.dart';
+import 'package:passenger_app/pages/home/map_screens/pages/map_screen.dart';
+import 'package:passenger_app/pages/home/home_screens/pages/home_screen.dart';
+import 'package:passenger_app/pages/home/home_screens/pages/search_location_screen.dart';
 
 class HomeScreens extends StatefulWidget {
   HomeScreens({Key? key}) : super(key: key);

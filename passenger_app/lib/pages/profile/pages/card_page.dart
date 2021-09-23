@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:passenger_app/modals/credit_card.dart';
-import 'package:passenger_app/pages/card_type.dart';
+import 'package:passenger_app/utils/card_type_enum.dart';
 import 'package:passenger_app/theme/colors.dart';
-import 'package:passenger_app/widgets/credit_card.dart';
+import 'package:passenger_app/pages/profile/widgets/credit_card.dart';
 import 'package:passenger_app/widgets/dialog_box.dart';
 
 class MyCardsScreen extends StatefulWidget {

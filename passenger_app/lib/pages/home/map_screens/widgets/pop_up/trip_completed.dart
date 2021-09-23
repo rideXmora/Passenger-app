@@ -2,8 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:passenger_app/theme/colors.dart';
 import 'package:passenger_app/widgets/secondary_button.dart';
-
-import '../trip_history_screen.dart';
+import 'package:passenger_app/widgets/simple_icon_text_box.dart';
 
 class TripCompleted extends StatelessWidget {
   TripCompleted({
