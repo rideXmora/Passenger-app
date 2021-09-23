@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:passenger_app/pages/sign_in_up/pages/language_selection_screen.dart';
+import 'package:passenger_app/controllers/auth_controller.dart';
 import 'package:passenger_app/theme/colors.dart';
 import 'package:passenger_app/widgets/circular_loading.dart';
 
@@ -13,17 +13,13 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  AuthController authController = Get.find<AuthController>();
+
   @override
   void initState() {
     super.initState();
 
-    load();
-  }
-
-  Future<dynamic> load() async {
-    await Future.delayed(Duration(seconds: 2)).then((value) {
-      Get.offAll(LanguageSelectionScreen());
-    });
+    authController.loadData();
   }
 
   @override
