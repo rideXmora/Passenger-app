@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:passenger_app/controllers/controller.dart';
 import 'package:passenger_app/pages/home_screen.dart';
 import 'package:passenger_app/pages/map_screens/map_screen.dart';
 import 'package:passenger_app/pages/map_screens/trip_state_enum.dart';
@@ -41,12 +43,15 @@ class _HomeScreensState extends State<HomeScreens> {
       },
       child: Stack(
         children: [
-          HomeScreen(
-            onTap: () {
-              setState(() {
-                search = true;
-              });
-            },
+          Center(
+            child: HomeScreen(
+              onTap: () {
+                setState(() {
+                  search = true;
+                });
+                Get.find<Controller>().increment();
+              },
+            ),
           ),
           search
               ? SearchLocationScreen(

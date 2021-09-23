@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:passenger_app/pages/bottom_navigation_bar_handler.dart';
 import 'package:passenger_app/pages/getting_started_screen.dart';
 import 'package:passenger_app/pages/registration_screen.dart';
 import 'package:passenger_app/pages/splash_screen.dart';
 import 'package:passenger_app/theme/colors.dart';
+
+import 'controllers/app_binding.dart';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -21,7 +24,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'RideX',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -31,6 +34,7 @@ class MyApp extends StatelessWidget {
         backgroundColor: primaryColorWhite,
       ),
       //home: GettingStartedScreen(),
+      initialBinding: AppBinding(),
       home: BottomNavHandler(),
     );
   }

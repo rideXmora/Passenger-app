@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:passenger_app/theme/colors.dart';
 import 'package:passenger_app/widgets/secondary_button.dart';
 
@@ -34,24 +35,33 @@ class FindingRideFloatingPanel extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            height: 250,
+            height: 326,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(17),
                 topRight: Radius.circular(17),
+                bottomLeft: Radius.circular(17),
+                bottomRight: Radius.circular(17),
               ),
               color: primaryColorWhite,
             ),
             child: Stack(
               children: [
                 Container(
-                  height: 250,
+                  height: 326,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(17),
                       topRight: Radius.circular(17),
+                      bottomLeft: Radius.circular(17),
+                      bottomRight: Radius.circular(17),
                     ),
                     color: primaryColorWhite,
+                  ),
+                  child: LottieBuilder.asset(
+                    "assets/lotties/passenger_wait_for_driver.json",
+                    height: 360,
+                    fit: BoxFit.fill,
                   ),
                 ),
                 Align(
@@ -70,30 +80,43 @@ class FindingRideFloatingPanel extends StatelessWidget {
                     ),
                   ),
                 ),
-              ],
-            ),
-          ),
-          Divider(
-            height: 3,
-            color: primaryColorDark,
-            thickness: 3,
-          ),
-          Expanded(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SecondaryButton(
-                  height: 40,
-                  width: MediaQuery.of(context).size.width * 0.5,
-                  onPressed: onPressed,
-                  loading: loading,
-                  text: "Cancel ride",
-                  boxColor: primaryColorDark,
-                  shadowColor: Colors.transparent,
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    height: 40,
+                    width: MediaQuery.of(context).size.width - 30,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(17),
+                        bottomRight: Radius.circular(17),
+                      ),
+                      color: primaryColorLight,
+                    ),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: SecondaryButton(
+                      height: 40,
+                      width: MediaQuery.of(context).size.width * 0.5,
+                      onPressed: onPressed,
+                      loading: loading,
+                      text: "Cancel ride",
+                      boxColor: primaryColorDark,
+                      shadowColor: Colors.transparent,
+                    ),
+                  ),
                 ),
               ],
             ),
-          )
+          ),
+          // Divider(
+          //   height: 3,
+          //   color: primaryColorDark,
+          //   thickness: 3,
+          // ),
         ],
       ),
     );

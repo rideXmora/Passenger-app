@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:passenger_app/controllers/controller.dart';
 import 'package:passenger_app/pages/search_location_screen.dart';
 import 'package:passenger_app/theme/colors.dart';
 import 'package:passenger_app/widgets/custom_text_field.dart';
@@ -95,33 +97,40 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 30),
-                    child: GestureDetector(
-                      onTap: widget.onTap,
-                      child: Stack(
-                        children: [
-                          CustomTextField(
-                            readOnly: true,
-                            height: height,
-                            width: width,
-                            controller: whereController,
-                            hintText: "Where to ...",
-                            prefixBoxColor: primaryColorBlack,
-                            prefixIcon: Icon(
-                              Icons.location_on_rounded,
-                              color: primaryColorLight,
+                    child: Obx(
+                      () => GestureDetector(
+                        onTap: widget.onTap,
+                        child: Stack(
+                          children: [
+                            CustomTextField(
+                              readOnly: true,
+                              height: height,
+                              width: width,
+                              // controller: whereController,
+                              controller: TextEditingController(
+                                  text: Get.find<Controller>()
+                                      .counter
+                                      .value
+                                      .toString()),
+                              hintText: "Where to ...",
+                              prefixBoxColor: primaryColorBlack,
+                              prefixIcon: Icon(
+                                Icons.location_on_rounded,
+                                color: primaryColorLight,
+                              ),
+                              dropDown: SizedBox(),
+                              onChanged: () {},
+                              phoneNumberPrefix: SizedBox(),
+                              suffix: SizedBox(),
+                              inputFormatters: [],
                             ),
-                            dropDown: SizedBox(),
-                            onChanged: () {},
-                            phoneNumberPrefix: SizedBox(),
-                            suffix: SizedBox(),
-                            inputFormatters: [],
-                          ),
-                          Container(
-                            width: width,
-                            height: 54,
-                            color: Colors.transparent,
-                          ),
-                        ],
+                            Container(
+                              width: width,
+                              height: 54,
+                              color: Colors.transparent,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),

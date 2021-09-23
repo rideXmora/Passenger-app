@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:passenger_app/pages/card_type.dart';
 import 'package:passenger_app/theme/colors.dart';
 import 'package:passenger_app/utils/card_icon.dart';
@@ -137,26 +138,26 @@ class CreditCardWidget extends StatelessWidget {
               ],
             ),
           ),
-          // Align(
-          //   alignment: topSVGAlignment,
-          //   child: Stack(
-          //     alignment: Alignment.topRight,
-          //     children: [
-          //       Padding(
-          //         padding: const EdgeInsets.only(right: 50, left: 5),
-          //         child: SvgPicture.asset(
-          //           "assets/images/wallet-circle2.svg",
-          //         ),
-          //       ),
-          //       Padding(
-          //         padding: const EdgeInsets.only(right: 10),
-          //         child: SvgPicture.asset(
-          //           "assets/images/wallet-circle1.svg",
-          //         ),
-          //       ),
-          //     ],
-          //   ),
-          // ),
+          Align(
+            alignment: topSVGAlignment,
+            child: Stack(
+              alignment: Alignment.topRight,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 50, left: 5),
+                  child: SvgPicture.asset(
+                    "assets/svgs/wallet-circle2.svg",
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 10),
+                  child: SvgPicture.asset(
+                    "assets/svgs/wallet-circle1.svg",
+                  ),
+                ),
+              ],
+            ),
+          ),
           selected
               ? Container(
                   width: width,
