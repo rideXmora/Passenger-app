@@ -2,7 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
-import 'package:passenger_app/pages/sign_in_up/pages/mobile_number_verification_screen.dart';
+import 'package:get/get.dart';
+import 'package:passenger_app/controllers/auth_controller.dart';
 import 'package:passenger_app/theme/colors.dart';
 import 'package:passenger_app/widgets/custom_back_button.dart';
 import 'package:passenger_app/widgets/custom_text_field.dart';
@@ -164,20 +165,21 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
                             mobileNumberController.text.replaceAll(" ", "");
                         debugPrint(phoneNumber.length.toString());
                         if (phoneNumber.length == 12) {
-                          Future.delayed(Duration(seconds: 3)).then((value) {
-                            setState(() {
-                              loading = false;
-                            });
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    MobileNumberVerificationScreen(
-                                        phoneNo: phoneNumber,
-                                        page: "GETTING_STARTED_PAGE"),
-                              ),
-                            );
+                          setState(() {
+                            loading = false;
                           });
+                          await Get.find<AuthController>()
+                              .signUp(phone: phoneNumber);
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     builder: (BuildContext context) =>
+                          //         MobileNumberVerificationScreen(
+                          //             phoneNo: phoneNumber,
+                          //             page: "GETTING_STARTED_PAGE"),
+                          //   ),
+                          // );
+
                         } else {
                           setState(() {
                             loading = false;

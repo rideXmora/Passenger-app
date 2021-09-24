@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:passenger_app/pages/sign_in_up/pages/getting_started_screen.dart';
 import 'package:passenger_app/pages/sign_in_up/widgets/language_selection_radio_button.dart';
 import 'package:passenger_app/theme/colors.dart';
-import 'package:passenger_app/widgets/main_button.dart';
 import 'package:passenger_app/widgets/secondary_button_with_icon.dart';
 
 class LanguageSelectionScreen extends StatelessWidget {
