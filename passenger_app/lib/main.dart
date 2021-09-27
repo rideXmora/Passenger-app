@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:passenger_app/pages/bottom_navigation_bar_handler.dart';
 import 'package:passenger_app/pages/splash_screen.dart';
 import 'package:passenger_app/theme/colors.dart';
+import 'package:passenger_app/utils/local_string.dart';
 
 import 'controllers/app_binding.dart';
 
@@ -32,6 +33,8 @@ class MyApp extends StatelessWidget {
         backgroundColor: primaryColorWhite,
       ),
       //home: GettingStartedScreen(),
+      translations: LocalString(),
+      locale: Locale('en', 'US'),
       initialBinding: AppBinding(),
       home: SplashScreen(),
     );
