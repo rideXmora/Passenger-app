@@ -56,44 +56,26 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
             Center(
               child: LanguageSelectionRadioButton(
                 selected: selected,
-                onTap_1: () async {
+                onTap_1: () {
                   setState(() {
                     selected = 1;
                   });
                   var locale = Locale('en', 'UK');
                   Get.updateLocale(locale);
-                  SharedPreferences store =
-                      await SharedPreferences.getInstance();
-                  store.setString(
-                    "lan",
-                    'en_UK',
-                  );
                 },
-                onTap_2: () async {
+                onTap_2: () {
                   setState(() {
                     selected = 2;
                   });
                   var locale = Locale('si', 'LK');
                   Get.updateLocale(locale);
-                  SharedPreferences store =
-                      await SharedPreferences.getInstance();
-                  store.setString(
-                    "lan",
-                    'si_LK',
-                  );
                 },
-                onTap_3: () async {
+                onTap_3: () {
                   setState(() {
                     selected = 3;
                   });
                   var locale = Locale('ta', 'LK');
                   Get.updateLocale(locale);
-                  SharedPreferences store =
-                      await SharedPreferences.getInstance();
-                  store.setString(
-                    "lan",
-                    'ta_LK',
-                  );
                 },
               ),
             ),
@@ -103,10 +85,31 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
             SecondaryButtonWithIcon(
               icon: Icons.arrow_forward_rounded,
               iconColor: primaryColorWhite,
-              onPressed: () {
+              onPressed: () async {
+                SharedPreferences store = await SharedPreferences.getInstance();
+                switch (selected) {
+                  case 1:
+                    break;
+                  case 2:
+                    store.setString(
+                      "lan",
+                      'si_LK',
+                    );
+
+                    break;
+                  case 3:
+                    store.setString(
+                      "lan",
+                      'ta_LK',
+                    );
+                    break;
+                  default:
+                    store.setString(
+                      "lan",
+                      'en_UK',
+                    );
+                }
                 Get.to(GettingStartedScreen());
-                // var locale = Locale('si', 'LK');
-                // Get.updateLocale(locale);
               },
               text: "",
               boxColor: primaryColorDark,
