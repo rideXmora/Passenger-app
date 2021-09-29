@@ -5,6 +5,36 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:passenger_app/utils/config.dart';
 
+Future<Map<dynamic, dynamic>> getRequest(
+    {required String url, required String token}) async {
+  try {
+    var completeUrl = Uri.http(BASEURL, url);
+    var response;
+    if (token == "") {
+      response = await http
+          .get(completeUrl, headers: {"Content-Type": "application/json"});
+    } else {
+      response = await http.get(
+        completeUrl,
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer $token',
+        },
+      );
+    }
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return generateSuccessOutput(response);
+    } else {
+      return generateErrorOutput(jsonDecode(response.body));
+    }
+  } catch (error) {
+    Get.snackbar("Something is wrong" + "!!!", "Please try again");
+    debugPrint("try catch Error : " + error.toString());
+    return {"error": true};
+  }
+}
+
 Future<Map<dynamic, dynamic>> postRequest(
     {required String url,
     required Map<String, dynamic> data,
@@ -35,29 +65,7 @@ Future<Map<dynamic, dynamic>> postRequest(
     debugPrint("try catch Error : " + error.toString());
     return {"error": true};
   }
-
-  // } catch (error) {
-  //   debugPrint("catch" + error.toString());
-  //   return generateErrorOutput(error);
-  //   //return generateErrorOutput(error);
-  // } finally {}
-  // try {
-
-  // 	var response = await axios.get(url);
-  // 	//return generateSuccessOutput(response);
-  // } catch (error) {
-  // 	//return generateErrorOutput(error);
-  // }
 }
-
-// export const postRequest = async (url, data) => {
-// 	try {
-// 		let response = await axios.post(url, data);
-// 		return generateSuccessOutput(response);
-// 	} catch (error) {
-// 		return generateErrorOutput(error);
-// 	}
-// };
 
 // export const putRequest = async (url, data, headers = {}) => {
 // 	try {

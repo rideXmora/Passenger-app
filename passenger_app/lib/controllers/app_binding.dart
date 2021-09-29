@@ -9,10 +9,10 @@ class AppBinding extends Bindings {
   @override
   void dependencies() {
     print("app binding");
-    Get.lazyPut<Controller>(() => Controller());
-    Get.lazyPut<AuthController>(() => AuthController());
-    Get.lazyPut<MapController>(() => MapController());
-    Get.lazyPut<RideController>(() => RideController());
-    Get.lazyPut<UserController>(() => UserController());
+    Get.put(Controller());
+    Get..put(AuthController());
+    Get.put(MapController());
+    Get.put(RideController());
+    Get.put(UserController());
   }
 }

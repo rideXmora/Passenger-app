@@ -20,7 +20,11 @@ class UserController extends GetxController {
     });
   }
 
-  void updatePassengerData(dynamic data) {
+  void updatePassengerData(
+    dynamic data,
+    String token,
+    String refreshToken,
+  ) {
     passenger.update((val) {
       val!.id = data["id"];
       val.phone = data["phone"];
@@ -29,6 +33,8 @@ class UserController extends GetxController {
       val.totalRating = data["totalRating"];
       val.totalRides = data["totalRides"];
       val.pastRides = List<String>.from(data["pastRides"]);
+      val.token = token;
+      val.refreshToken = refreshToken;
       val.enabled = data["enabled"];
       val.suspend = data["suspend"] == null ? false : data["suspend"];
     });

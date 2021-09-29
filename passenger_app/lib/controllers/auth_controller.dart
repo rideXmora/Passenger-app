@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 import 'package:passenger_app/api/auth_api.dart';
+import 'package:passenger_app/api/passenger_api.dart';
 import 'package:passenger_app/controllers/user_controller.dart';
 import 'package:passenger_app/pages/bottom_navigation_bar_handler.dart';
 import 'package:passenger_app/pages/sign_in_up/pages/getting_started_screen.dart';
@@ -15,7 +17,61 @@ class AuthController extends GetxController {
   var languageSelection = 1.obs;
   // SplashScreen data loading
   Future<void> loadData() async {
-    await checkLangugae();
+    SharedPreferences store = await SharedPreferences.getInstance();
+    String token = store.getString("token") == null
+        ? ''
+        : store.getString("token").toString();
+    String refreshToken = store.getString("refreshToken") == null
+        ? ''
+        : store.getString("refreshToken").toString();
+    String lan =
+        store.getString("lan") == null ? '' : store.getString("lan").toString();
+    debugPrint("token : \n" +
+        token +
+        "\n refreshToken : \n" +
+        refreshToken +
+        "\n lan : \n" +
+        lan);
+    if (lan == '') {
+      debugPrint("Language null");
+      store.remove("token");
+      store.remove("refreshToken");
+      Get.offAll(LanguageSelectionScreen());
+    } else {
+      debugPrint("Language not null");
+      var locale = Locale(lan.split("_")[0], lan.split("_")[1]);
+      Get.updateLocale(locale);
+      if (token == '') {
+        debugPrint("token null");
+        Get.offAll(GettingStartedScreen());
+      } else {
+        debugPrint("token not null");
+        bool isExpired = await isTokenExpired();
+        if (isExpired) {
+          debugPrint("token expired refresh need");
+          //to do
+          //regenerate token with refresh token
+          Get.offAll(GettingStartedScreen());
+        } else {
+          debugPrint("token valid");
+          dynamic response = await profile(token: token);
+          Get.find<UserController>().updatePassengerData(
+            response["body"],
+            token,
+            refreshToken,
+          );
+          debugPrint(Get.find<UserController>().passenger.value.toString());
+          Get.offAll(() => BottomNavHandler());
+        }
+      }
+    }
+  }
+
+  Future<bool> isTokenExpired() async {
+    SharedPreferences store = await SharedPreferences.getInstance();
+    bool hasExpired = JwtDecoder.isExpired(store.getString("token").toString());
+
+    return hasExpired;
   }
 
   // requesting otp from GettingStartedScreen
@@ -38,7 +94,9 @@ class AuthController extends GetxController {
 
   // submit otp from MobileNumberVerification
   Future<void> submitOTP({required String phone, required String otp}) async {
+    SharedPreferences store = await SharedPreferences.getInstance();
     debugPrint(otp.toString());
+
     if (phone.length < 12) {
       Get.snackbar("Phone number is not valid!!!",
           "Phone number must have 9 characters");
@@ -46,6 +104,16 @@ class AuthController extends GetxController {
       Get.snackbar("OTP is not valid!!!", "Otp must have 6 characters");
     } else {
       dynamic response = await phoneVerify(phone: phone, otp: otp);
+      String token = response["body"]["token"];
+      String refreshToken = response["body"]["refreshToken"];
+      store.setString(
+        "token",
+        token,
+      );
+      store.setString(
+        "refreshToken",
+        refreshToken,
+      );
       debugPrint(response["enabled"].toString());
 
       if (!response["error"]) {
@@ -77,7 +145,14 @@ class AuthController extends GetxController {
 
       if (!response["error"]) {
         if (response["body"]["enabled"]) {
-          Get.find<UserController>().updatePassengerData(response["body"]);
+          SharedPreferences store = await SharedPreferences.getInstance();
+          String token = store.getString("token").toString();
+          String refreshToken = store.getString("refreshToken").toString();
+          Get.find<UserController>().updatePassengerData(
+            response["body"],
+            token,
+            refreshToken,
+          );
           debugPrint(Get.find<UserController>().passenger.value.toString());
           Get.offAll(() => BottomNavHandler());
         } else {
@@ -86,23 +161,5 @@ class AuthController extends GetxController {
       }
       return;
     }
-  }
-
-  //check language on app loading
-  Future<void> checkLangugae() async {
-    SharedPreferences store = await SharedPreferences.getInstance();
-
-    if (store.get("lan") == null) {
-      Get.to(() => LanguageSelectionScreen());
-      return;
-    }
-  }
-
-  //add language to local storage
-  Future<void> addLangugae(String language) async {
-    SharedPreferences store = await SharedPreferences.getInstance();
-
-    store.setString("lan", language);
-    Get.to(GettingStartedScreen());
   }
 }

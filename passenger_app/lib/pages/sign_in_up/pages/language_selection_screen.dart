@@ -5,6 +5,7 @@ import 'package:passenger_app/pages/sign_in_up/pages/getting_started_screen.dart
 import 'package:passenger_app/pages/sign_in_up/widgets/language_selection_radio_button.dart';
 import 'package:passenger_app/theme/colors.dart';
 import 'package:passenger_app/widgets/secondary_button_with_icon.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LanguageSelectionScreen extends StatefulWidget {
   LanguageSelectionScreen({Key? key}) : super(key: key);
@@ -55,27 +56,44 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
             Center(
               child: LanguageSelectionRadioButton(
                 selected: selected,
-                onTap_1: () {
+                onTap_1: () async {
                   setState(() {
                     selected = 1;
                   });
                   var locale = Locale('en', 'UK');
                   Get.updateLocale(locale);
+                  SharedPreferences store =
+                      await SharedPreferences.getInstance();
+                  store.setString(
+                    "lan",
+                    'en_UK',
+                  );
                 },
-                onTap_2: () {
+                onTap_2: () async {
                   setState(() {
                     selected = 2;
                   });
                   var locale = Locale('si', 'LK');
                   Get.updateLocale(locale);
+                  SharedPreferences store =
+                      await SharedPreferences.getInstance();
+                  store.setString(
+                    "lan",
+                    'si_LK',
+                  );
                 },
-                onTap_3: () {
+                onTap_3: () async {
                   setState(() {
                     selected = 3;
                   });
                   var locale = Locale('ta', 'LK');
                   Get.updateLocale(locale);
-                  
+                  SharedPreferences store =
+                      await SharedPreferences.getInstance();
+                  store.setString(
+                    "lan",
+                    'ta_LK',
+                  );
                 },
               ),
             ),
