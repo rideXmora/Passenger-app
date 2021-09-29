@@ -7,6 +7,7 @@ Future<dynamic> phoneAuth({required String phone}) async {
     data: {
       "phone": phone,
     },
+    token: '',
   );
   return response;
 }
@@ -20,6 +21,23 @@ Future<dynamic> phoneVerify(
       "phone": phone,
       "otp": otp,
     },
+    token: '',
+  );
+  return response;
+}
+
+Future<dynamic> profileComplete(
+    {required String name,
+    required String email,
+    required String token}) async {
+  String url = '/api/passenger/profileComplete';
+  dynamic response = await postRequest(
+    url: url,
+    data: {
+      "email": email,
+      "name": name,
+    },
+    token: token,
   );
   return response;
 }

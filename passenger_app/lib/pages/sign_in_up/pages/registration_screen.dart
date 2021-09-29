@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:get/get.dart';
+import 'package:passenger_app/controllers/auth_controller.dart';
 import 'package:passenger_app/controllers/user_controller.dart';
 import 'package:passenger_app/pages/bottom_navigation_bar_handler.dart';
 import 'package:passenger_app/theme/colors.dart';
@@ -40,6 +41,54 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           " " +
           widget.phoneNo.substring(8, 12);
     });
+  }
+
+  void onSubmitButton() async {
+    if (!loading) {
+      setState(() {
+        loading = true;
+      });
+
+      String phoneNumber = dropdownValue.trim() +
+          mobileNumberController.text.replaceAll(" ", "");
+      if (phoneNumber.length == 12) {
+        await Get.find<AuthController>().register(
+          name: nameController.text.trim(),
+          email: emailController.text.trim(),
+        );
+        setState(() {
+          loading = false;
+        });
+      } else {
+        setState(() {
+          loading = false;
+        });
+      }
+    }
+  }
+
+  void onSubmitText(String value) async {
+    if (!loading) {
+      setState(() {
+        loading = true;
+      });
+
+      String phoneNumber = dropdownValue.trim() +
+          mobileNumberController.text.replaceAll(" ", "");
+      if (phoneNumber.length == 12) {
+        await Get.find<AuthController>().register(
+          name: nameController.text.trim(),
+          email: emailController.text.trim(),
+        );
+        setState(() {
+          loading = false;
+        });
+      } else {
+        setState(() {
+          loading = false;
+        });
+      }
+    }
   }
 
   Future _pickImageFromToProfile(BuildContext context) async {
@@ -157,6 +206,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     phoneNumberPrefix: SizedBox(),
                     suffix: SizedBox(),
                     inputFormatters: [],
+                    textInputAction: TextInputAction.next,
                   ),
                   SizedBox(
                     height: 16,
@@ -177,6 +227,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     phoneNumberPrefix: SizedBox(),
                     suffix: SizedBox(),
                     inputFormatters: [],
+                    onSubmit: onSubmitText,
+                    textInputAction: TextInputAction.done,
                   ),
                   SizedBox(
                     height: 16,
@@ -268,35 +320,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           loading: loading,
           width: width,
           height: height,
-          onPressed: () async {
-            if (!loading) {
-              setState(() {
-                loading = true;
-              });
-
-              // await addInstructor(context);
-              String phoneNumber = dropdownValue.trim() +
-                  mobileNumberController.text.replaceAll(" ", "");
-              debugPrint(phoneNumber.length.toString());
-              if (phoneNumber.length == 12) {
-                Future.delayed(Duration(seconds: 3)).then((value) {
-                  setState(() {
-                    loading = false;
-                  });
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => BottomNavHandler(),
-                    ),
-                  );
-                });
-              } else {
-                setState(() {
-                  loading = false;
-                });
-              }
-            }
-          },
+          onPressed: onSubmitButton,
           text: "CONTINUE",
           boxColor: primaryColorDark,
           shadowColor: primaryColorDark,

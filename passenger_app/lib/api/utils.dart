@@ -6,13 +6,24 @@ import 'package:http/http.dart' as http;
 import 'package:passenger_app/utils/config.dart';
 
 Future<Map<dynamic, dynamic>> postRequest(
-    {required String url, required Map<String, dynamic> data}) async {
+    {required String url,
+    required Map<String, dynamic> data,
+    required String token}) async {
   try {
     var completeUrl = Uri.http(BASEURL, url);
     var jsonEncodedData = jsonEncode(data);
-
-    var response = await http.post(completeUrl,
-        headers: {"Content-Type": "application/json"}, body: jsonEncodedData);
+    var response;
+    if (token == "") {
+      response = await http.post(completeUrl,
+          headers: {"Content-Type": "application/json"}, body: jsonEncodedData);
+    } else {
+      response = await http.post(completeUrl,
+          headers: {
+            "Content-Type": "application/json",
+            'Authorization': 'Bearer $token',
+          },
+          body: jsonEncodedData);
+    }
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       return generateSuccessOutput(response);

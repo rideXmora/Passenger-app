@@ -13,8 +13,22 @@ class UserController extends GetxController {
       val.totalRating = data["totalRating"];
       val.totalRides = data["totalRides"];
       val.pastRides = List<String>.from(data["pastRides"]);
-      val.token = "bearer " + data["token"];
+      val.token = data["token"];
       val.refreshToken = data["refreshToken"];
+      val.enabled = data["enabled"];
+      val.suspend = data["suspend"] == null ? false : data["suspend"];
+    });
+  }
+
+  void updatePassengerData(dynamic data) {
+    passenger.update((val) {
+      val!.id = data["id"];
+      val.phone = data["phone"];
+      val.email = data["email"] == null ? "" : data["email"];
+      val.name = data["name"] == null ? "" : data["email"];
+      val.totalRating = data["totalRating"];
+      val.totalRides = data["totalRides"];
+      val.pastRides = List<String>.from(data["pastRides"]);
       val.enabled = data["enabled"];
       val.suspend = data["suspend"] == null ? false : data["suspend"];
     });

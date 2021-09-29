@@ -8,6 +8,7 @@ import 'package:passenger_app/pages/sign_in_up/pages/getting_started_screen.dart
 import 'package:passenger_app/pages/sign_in_up/pages/language_selection_screen.dart';
 import 'package:passenger_app/pages/sign_in_up/pages/mobile_number_verification_screen.dart';
 import 'package:passenger_app/pages/sign_in_up/pages/registration_screen.dart';
+import 'package:passenger_app/utils/validation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthController extends GetxController {
@@ -56,6 +57,31 @@ class AuthController extends GetxController {
           Get.find<UserController>().savePassengerData(response["body"]);
           debugPrint(Get.find<UserController>().passenger.value.toString());
           Get.to(() => RegistrationScreen(phoneNo: phone));
+        }
+      }
+      return;
+    }
+  }
+
+  // submit otp from MobileNumberVerification
+  Future<void> register({required String name, required String email}) async {
+    if (name.length == 0) {
+      Get.snackbar("Name is not valid!!!", "Name field cannot be empty");
+    } else if (!isEmailValid(email)) {
+    } else {
+      dynamic response = await profileComplete(
+          name: name,
+          email: email,
+          token: Get.find<UserController>().passenger.value.token);
+      debugPrint(response["enabled"].toString());
+
+      if (!response["error"]) {
+        if (response["body"]["enabled"]) {
+          Get.find<UserController>().updatePassengerData(response["body"]);
+          debugPrint(Get.find<UserController>().passenger.value.toString());
+          Get.offAll(() => BottomNavHandler());
+        } else {
+          Get.snackbar("Something is wrong!!!", "Please try again");
         }
       }
       return;
