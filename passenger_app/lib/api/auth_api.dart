@@ -1,11 +1,25 @@
 import 'package:passenger_app/api/utils.dart';
 
-Future<void> signUpRequest({required String phone}) async {
-  String url = 'http://ridex.ml/api/auth/passenger/phoneAuth';
-  await postRequest(
-    urlOld: url,
+Future<dynamic> phoneAuth({required String phone}) async {
+  String url = '/api/auth/passenger/phoneAuth';
+  dynamic response = await postRequest(
+    url: url,
     data: {
       "phone": phone,
     },
   );
+  return response;
+}
+
+Future<dynamic> phoneVerify(
+    {required String phone, required String otp}) async {
+  String url = '/api/auth/passenger/phoneVerify';
+  dynamic response = await postRequest(
+    url: url,
+    data: {
+      "phone": phone,
+      "otp": otp,
+    },
+  );
+  return response;
 }

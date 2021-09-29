@@ -21,6 +21,7 @@ class CustomTextField extends StatelessWidget {
     this.phoneNumberPrefixWidth = 38,
     required this.onChanged,
     required this.inputFormatters,
+    this.onSubmit,
   });
 
   final double height;
@@ -39,6 +40,7 @@ class CustomTextField extends StatelessWidget {
   final double phoneNumberPrefixWidth;
   final onChanged;
   final List<TextInputFormatter> inputFormatters;
+  final onSubmit;
 
   @override
   Widget build(BuildContext context) {
@@ -104,6 +106,7 @@ class CustomTextField extends StatelessWidget {
               minWidth: suffix == null ? 0 : 38,
             ),
           ),
+          onSubmitted: onSubmit,
         ),
       ),
     );

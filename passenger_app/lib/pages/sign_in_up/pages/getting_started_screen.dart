@@ -9,6 +9,8 @@ import 'package:passenger_app/widgets/custom_back_button.dart';
 import 'package:passenger_app/widgets/custom_text_field.dart';
 import 'package:passenger_app/widgets/main_button.dart';
 
+import 'mobile_number_verification_screen.dart';
+
 class GettingStartedScreen extends StatefulWidget {
   const GettingStartedScreen({Key? key}) : super(key: key);
 
@@ -21,6 +23,49 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
   String dropdownValue = "+94";
   TextEditingController mobileNumberController = TextEditingController();
   bool loading = false;
+
+  void onSubmitText(String value) async {
+    if (!loading) {
+      setState(() {
+        loading = true;
+      });
+
+      String phoneNumber = dropdownValue.trim() +
+          mobileNumberController.text.replaceAll(" ", "");
+      debugPrint(phoneNumber.length.toString());
+
+      await Get.find<AuthController>().getOTP(
+        phone: phoneNumber,
+        from: "main",
+      );
+
+      setState(() {
+        loading = false;
+      });
+    }
+  }
+
+  void onSubmitButton() async {
+    if (!loading) {
+      setState(() {
+        loading = true;
+      });
+
+      String phoneNumber = dropdownValue.trim() +
+          mobileNumberController.text.replaceAll(" ", "");
+      debugPrint(phoneNumber.length.toString());
+
+      await Get.find<AuthController>().getOTP(
+        phone: phoneNumber,
+        from: "main",
+      );
+      Get.to(() => MobileNumberVerificationScreen(phoneNo: phoneNumber));
+
+      setState(() {
+        loading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -146,6 +191,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
                       ],
                     ),
                     suffix: SizedBox(),
+                    onSubmit: onSubmitText,
                   ),
                   SizedBox(
                     height: 90,
@@ -154,39 +200,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
                     loading: loading,
                     width: width,
                     height: height,
-                    onPressed: () async {
-                      if (!loading) {
-                        setState(() {
-                          loading = true;
-                        });
-
-                        // await addInstructor(context);
-                        String phoneNumber = dropdownValue.trim() +
-                            mobileNumberController.text.replaceAll(" ", "");
-                        debugPrint(phoneNumber.length.toString());
-                        if (phoneNumber.length == 12) {
-                          setState(() {
-                            loading = false;
-                          });
-                          await Get.find<AuthController>()
-                              .signUp(phone: phoneNumber);
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (BuildContext context) =>
-                          //         MobileNumberVerificationScreen(
-                          //             phoneNo: phoneNumber,
-                          //             page: "GETTING_STARTED_PAGE"),
-                          //   ),
-                          // );
-
-                        } else {
-                          setState(() {
-                            loading = false;
-                          });
-                        }
-                      }
-                    },
+                    onPressed: onSubmitButton,
                     text: "CONTINUE",
                     boxColor: primaryColorDark,
                     shadowColor: primaryColorDark,

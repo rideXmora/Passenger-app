@@ -75,6 +75,7 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                   });
                   var locale = Locale('ta', 'LK');
                   Get.updateLocale(locale);
+                  
                 },
               ),
             ),

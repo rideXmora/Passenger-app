@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
+import 'package:get/get.dart';
+import 'package:passenger_app/controllers/user_controller.dart';
 import 'package:passenger_app/pages/bottom_navigation_bar_handler.dart';
 import 'package:passenger_app/theme/colors.dart';
 import 'package:passenger_app/widgets/custom_back_button.dart';
@@ -65,6 +67,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       body: GestureDetector(
         onTap: () {
           FocusScope.of(context).requestFocus(new FocusNode());
+          debugPrint(
+              Get.find<UserController>().passenger.value.toJson().toString());
         },
         child: SafeArea(
           child: SingleChildScrollView(
