@@ -8,6 +8,7 @@ import 'package:passenger_app/controllers/user_controller.dart';
 import 'package:passenger_app/pages/home/map_screens/pages/map_screen.dart';
 import 'package:passenger_app/pages/home/home_screens/pages/home_screen.dart';
 import 'package:passenger_app/pages/home/home_screens/pages/search_location_screen.dart';
+import 'package:passenger_app/widgets/dialog_box.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreens extends StatefulWidget {
@@ -20,6 +21,8 @@ class HomeScreens extends StatefulWidget {
 TextEditingController whereController = TextEditingController();
 bool search = false;
 bool map = false;
+bool dialogBox = false;
+bool loading = false;
 
 class _HomeScreensState extends State<HomeScreens> {
   @override
@@ -37,21 +40,59 @@ class _HomeScreensState extends State<HomeScreens> {
           });
         } else {
           debugPrint("as");
-          SystemNavigator.pop();
+          setState(() {
+            dialogBox = !dialogBox;
+          });
         }
         return false;
       },
       child: Stack(
         children: [
-          Center(
-            child: HomeScreen(
-              onTap: () {
-                setState(() {
-                  search = true;
-                });
-                Get.find<Controller>().increment();
-              },
-            ),
+          Stack(
+            children: [
+              Center(
+                child: HomeScreen(
+                  onTap: () {
+                    setState(() {
+                      search = true;
+                    });
+                    Get.find<Controller>().increment();
+                  },
+                ),
+              ),
+              dialogBox
+                  ? DialogBox(
+                      topic: "Do you really want quit?",
+                      loading: loading,
+                      onTap: () {
+                        if (!loading) {
+                          setState(() {
+                            dialogBox = false;
+                          });
+                        }
+                      },
+                      onNo: () {
+                        if (!loading) {
+                          setState(() {
+                            dialogBox = false;
+                          });
+                        }
+                      },
+                      onYes: () async {
+                        if (!loading) {
+                          setState(() {
+                            loading = true;
+                          });
+                          await Future.delayed(Duration(seconds: 2));
+                          SystemNavigator.pop();
+                          setState(() {
+                            loading = false;
+                          });
+                        }
+                      },
+                    )
+                  : Container(),
+            ],
           ),
           search
               ? SearchLocationScreen(
