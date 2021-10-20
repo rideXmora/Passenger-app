@@ -1,5 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:passenger_app/api/passenger_api.dart';
 import 'package:passenger_app/modals/passenger.dart';
+import 'package:passenger_app/pages/bottom_navigation_bar_handler.dart';
+import 'package:passenger_app/utils/language.dart';
+import 'package:passenger_app/utils/validation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserController extends GetxController {
   var passenger = Passenger(
@@ -55,6 +61,15 @@ class UserController extends GetxController {
     });
   }
 
+  void updatePassengerProfileData(
+    dynamic data,
+  ) {
+    passenger.update((val) {
+      val!.email = data["email"] == null ? "" : data["email"];
+      val.name = data["name"] == null ? "" : data["name"];
+    });
+  }
+
   void signOutUser() {
     passenger.update((val) {
       val!.id = "";
@@ -69,5 +84,47 @@ class UserController extends GetxController {
       val.totalRating = 0;
       val.totalRides = 0;
     });
+  }
+
+  // submit otp from MobileNumberVerification
+  Future<bool> changeProfile(
+      {required String name,
+      required String email,
+      required String language}) async {
+    if (name.length == 0) {
+      Get.snackbar("Name is not valid!!!", "Name field cannot be empty");
+      return false;
+    } else if (!isEmailValid(email)) {
+      return false;
+    } else {
+      dynamic response = await profileUpdate(
+          name: name,
+          email: email,
+          token: Get.find<UserController>().passenger.value.token);
+      debugPrint(response["enabled"].toString());
+
+      if (!response["error"]) {
+        if (response["body"]["enabled"]) {
+          SharedPreferences store = await SharedPreferences.getInstance();
+          Get.find<UserController>().updatePassengerProfileData(
+            response["body"],
+          );
+          var locale = Locale(LanguageUtils.getLocale(language).split("_")[0],
+              LanguageUtils.getLocale(language).split("_")[1]);
+          store.setString(
+            "lan",
+            LanguageUtils.getLocale(language),
+          );
+          Get.updateLocale(locale);
+          debugPrint(
+              Get.find<UserController>().passenger.value.toJson().toString());
+          return true;
+        } else {
+          Get.snackbar("Something is wrong!!!", "Please try again");
+          return false;
+        }
+      }
+    }
+    return false;
   }
 }
