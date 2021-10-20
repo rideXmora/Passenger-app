@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
+import 'package:get/get.dart';
+import 'package:passenger_app/controllers/auth_controller.dart';
 import 'package:passenger_app/theme/colors.dart';
 import 'package:passenger_app/widgets/custom_text_field.dart';
 import 'package:passenger_app/widgets/secondary_button.dart';
@@ -337,7 +339,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   SecondaryButton(
                       loading: loading,
-                      onPressed: () {
+                      onPressed: () async {
                         if (!loading) {
                           setState(() {
                             loading = true;
@@ -348,6 +350,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 loading = false;
                                 edit = false;
                               });
+                            });
+                          } else {
+                            await Get.find<AuthController>().signOut();
+                            setState(() {
+                              loading = false;
                             });
                           }
                         }

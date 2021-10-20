@@ -168,4 +168,13 @@ class AuthController extends GetxController {
       return;
     }
   }
+
+  // sign out user from the application
+  Future<void> signOut() async {
+    SharedPreferences store = await SharedPreferences.getInstance();
+    store.remove("token");
+    store.remove("refreshToken");
+    Get.find<UserController>().signOutUser();
+    Get.offAll(GettingStartedScreen());
+  }
 }

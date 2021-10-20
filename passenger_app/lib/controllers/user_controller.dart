@@ -54,4 +54,20 @@ class UserController extends GetxController {
       val.suspend = data["suspend"] == null ? false : data["suspend"];
     });
   }
+
+  void signOutUser() {
+    passenger.update((val) {
+      val!.id = "";
+      val.email = "";
+      val.enabled = false;
+      val.name = "";
+      val.pastRides = [];
+      val.phone = "";
+      val.refreshToken = "";
+      val.suspend = false;
+      val.token = "";
+      val.totalRating = 0;
+      val.totalRides = 0;
+    });
+  }
 }
