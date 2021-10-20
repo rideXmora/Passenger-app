@@ -59,7 +59,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
         phone: phoneNumber,
         from: "main",
       );
-      Get.to(() => MobileNumberVerificationScreen(phoneNo: phoneNumber));
+      // Get.to(() => MobileNumberVerificationScreen(phoneNo: phoneNumber));
 
       setState(() {
         loading = false;
