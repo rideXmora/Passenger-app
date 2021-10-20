@@ -9,10 +9,11 @@ class UserController extends GetxController {
       val!.id = data["id"];
       val.phone = data["phone"];
       val.email = data["email"] == null ? "" : data["email"];
-      val.name = data["name"] == null ? "" : data["email"];
+      val.name = data["name"] == null ? "" : data["name"];
       val.totalRating = data["totalRating"];
       val.totalRides = data["totalRides"];
-      val.pastRides = List<String>.from(data["pastRides"]);
+      val.pastRides =
+          data["pastRides"] == null ? [] : List<String>.from(data["pastRides"]);
       val.token = data["token"];
       val.refreshToken = data["refreshToken"];
       val.enabled = data["enabled"];
@@ -20,6 +21,7 @@ class UserController extends GetxController {
     });
   }
 
+//change
   void updatePassengerData(
     dynamic data,
     String token,
@@ -29,10 +31,11 @@ class UserController extends GetxController {
       val!.id = data["id"];
       val.phone = data["phone"];
       val.email = data["email"] == null ? "" : data["email"];
-      val.name = data["name"] == null ? "" : data["email"];
+      val.name = data["name"] == null ? "" : data["name"];
       val.totalRating = data["totalRating"];
       val.totalRides = data["totalRides"];
-      val.pastRides = List<String>.from(data["pastRides"]);
+      val.pastRides =
+          data["pastRides"] == null ? [] : List<String>.from(data["pastRides"]);
       val.token = token;
       val.refreshToken = refreshToken;
       val.enabled = data["enabled"];
