@@ -51,19 +51,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
       String phoneNumber = dropdownValue.trim() +
           mobileNumberController.text.replaceAll(" ", "");
-      if (phoneNumber.length == 12) {
-        await Get.find<AuthController>().register(
-          name: nameController.text.trim(),
-          email: emailController.text.trim(),
-        );
-        setState(() {
-          loading = false;
-        });
-      } else {
-        setState(() {
-          loading = false;
-        });
-      }
+      await Get.find<AuthController>().register(
+        name: nameController.text.trim(),
+        email: emailController.text.trim(),
+      );
+      setState(() {
+        loading = false;
+      });
     }
   }
 
