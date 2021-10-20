@@ -32,38 +32,44 @@ class AuthController extends GetxController {
         refreshToken +
         "\n lan : \n" +
         lan);
-    if (lan == '') {
-      debugPrint("Language null");
-      store.remove("token");
-      store.remove("refreshToken");
-      Get.offAll(LanguageSelectionScreen());
-    } else {
-      debugPrint("Language not null");
-      var locale = Locale(lan.split("_")[0], lan.split("_")[1]);
-      Get.updateLocale(locale);
-      if (token == '') {
-        debugPrint("token null");
-        Get.offAll(GettingStartedScreen());
+    try {
+      if (lan == '') {
+        debugPrint("Language null");
+        store.remove("token");
+        store.remove("refreshToken");
+        Get.offAll(LanguageSelectionScreen());
       } else {
-        debugPrint("token not null");
-        bool isExpired = await isTokenExpired();
-        if (isExpired) {
-          debugPrint("token expired refresh need");
-          //to do
-          //regenerate token with refresh token
+        debugPrint("Language not null");
+        var locale = Locale(lan.split("_")[0], lan.split("_")[1]);
+        Get.updateLocale(locale);
+        if (token == '') {
+          debugPrint("token null");
           Get.offAll(GettingStartedScreen());
         } else {
-          debugPrint("token valid");
-          dynamic response = await profile(token: token);
-          Get.find<UserController>().updatePassengerData(
-            response["body"],
-            token,
-            refreshToken,
-          );
-          debugPrint(Get.find<UserController>().passenger.value.toString());
-          Get.offAll(() => BottomNavHandler());
+          debugPrint("token not null");
+          bool isExpired = await isTokenExpired();
+          if (isExpired) {
+            debugPrint("token expired refresh need");
+            //to do
+            //regenerate token with refresh token
+            Get.offAll(GettingStartedScreen());
+          } else {
+            debugPrint("token valid");
+            dynamic response = await profile(token: token);
+            //change
+            Get.find<UserController>().updatePassengerData(
+              response["body"],
+              token,
+              refreshToken,
+            );
+            debugPrint(
+                Get.find<UserController>().passenger.value.toJson().toString());
+            Get.offAll(() => BottomNavHandler());
+          }
         }
       }
+    } catch (e) {
+      Get.offAll(GettingStartedScreen());
     }
   }
 
@@ -97,36 +103,35 @@ class AuthController extends GetxController {
     SharedPreferences store = await SharedPreferences.getInstance();
     debugPrint(otp.toString());
 
-    if (phone.length < 12) {
-      Get.snackbar("Phone number is not valid!!!",
-          "Phone number must have 9 characters");
-    } else if (otp.length < 6) {
+    if (otp.length < 6) {
       Get.snackbar("OTP is not valid!!!", "Otp must have 6 characters");
     } else {
       dynamic response = await phoneVerify(phone: phone, otp: otp);
-      String token = response["body"]["token"];
-      String refreshToken = response["body"]["refreshToken"];
-      store.setString(
-        "token",
-        token,
-      );
-      store.setString(
-        "refreshToken",
-        refreshToken,
-      );
-      debugPrint(response["enabled"].toString());
-
       if (!response["error"]) {
+        String token = response["body"]["token"];
+        String refreshToken = response["body"]["refreshToken"];
+        store.setString(
+          "token",
+          token,
+        );
+        store.setString(
+          "refreshToken",
+          refreshToken,
+        );
+        debugPrint(response["enabled"].toString());
         if (response["body"]["enabled"]) {
           Get.find<UserController>().savePassengerData(response["body"]);
-          debugPrint(Get.find<UserController>().passenger.value.toString());
+          debugPrint("passenger object\n" +
+              Get.find<UserController>().passenger.value.toJson().toString());
           Get.offAll(() => BottomNavHandler());
         } else {
           Get.find<UserController>().savePassengerData(response["body"]);
-          debugPrint(Get.find<UserController>().passenger.value.toString());
+          debugPrint("passenger object\n" +
+              Get.find<UserController>().passenger.value.toJson().toString());
           Get.to(() => RegistrationScreen(phoneNo: phone));
         }
       }
+
       return;
     }
   }
@@ -153,7 +158,8 @@ class AuthController extends GetxController {
             token,
             refreshToken,
           );
-          debugPrint(Get.find<UserController>().passenger.value.toString());
+          debugPrint(
+              Get.find<UserController>().passenger.value.toJson().toString());
           Get.offAll(() => BottomNavHandler());
         } else {
           Get.snackbar("Something is wrong!!!", "Please try again");
