@@ -10,17 +10,17 @@
 //       rating: json["rating"],
 class Passenger {
   Passenger({
-    this.id = "",
-    this.phone = "",
-    this.email = "",
-    this.name = "",
-    this.totalRating = 0,
-    this.totalRides = 0,
-    this.pastRides = const [],
-    this.token = "",
-    this.refreshToken = "",
-    this.enabled = false,
-    this.suspend = false,
+    required this.id,
+    required this.phone,
+    required this.email,
+    required this.name,
+    required this.totalRating,
+    required this.totalRides,
+    required this.pastRides,
+    required this.token,
+    required this.refreshToken,
+    required this.enabled,
+    required this.suspend,
   });
 
   String id;

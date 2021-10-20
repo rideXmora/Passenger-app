@@ -2,7 +2,19 @@ import 'package:get/get.dart';
 import 'package:passenger_app/modals/passenger.dart';
 
 class UserController extends GetxController {
-  var passenger = Passenger().obs;
+  var passenger = Passenger(
+    id: "",
+    email: "",
+    enabled: false,
+    name: "",
+    pastRides: [],
+    phone: "",
+    refreshToken: "",
+    suspend: false,
+    token: "",
+    totalRating: 0,
+    totalRides: 0,
+  ).obs;
 
   void savePassengerData(dynamic data) {
     passenger.update((val) {
@@ -16,7 +28,7 @@ class UserController extends GetxController {
           data["pastRides"] == null ? [] : List<String>.from(data["pastRides"]);
       val.token = data["token"];
       val.refreshToken = data["refreshToken"];
-      val.enabled = data["enabled"];
+      val.enabled = data["enabled"] == null ? false : data["enabled"];
       val.suspend = data["suspend"] == null ? false : data["suspend"];
     });
   }
@@ -38,7 +50,7 @@ class UserController extends GetxController {
           data["pastRides"] == null ? [] : List<String>.from(data["pastRides"]);
       val.token = token;
       val.refreshToken = refreshToken;
-      val.enabled = data["enabled"];
+      val.enabled = data["enabled"] == null ? false : data["enabled"];
       val.suspend = data["suspend"] == null ? false : data["suspend"];
     });
   }
