@@ -10,7 +10,7 @@ class AppBinding extends Bindings {
   void dependencies() {
     print("app binding");
     Get.put(Controller());
-    Get..put(AuthController());
+    Get.put(AuthController());
     Get.put(MapController());
     Get.put(RideController());
     Get.put(UserController());
