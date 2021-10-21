@@ -164,7 +164,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
                               });
                             },
                             dropdownColor: primaryColorLight,
-                            items: <String>['+94', '+34']
+                            items: <String>['+94']
                                 .map<DropdownMenuItem<String>>((String value) {
                               return DropdownMenuItem<String>(
                                 value: value,
