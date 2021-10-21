@@ -22,6 +22,22 @@ class UserController extends GetxController {
     totalRides: 0,
   ).obs;
 
+  void clearData() {
+    passenger.update((val) {
+      val!.id = "";
+      val.email = "";
+      val.enabled = false;
+      val.name = "";
+      val.pastRides = [];
+      val.phone = "";
+      val.refreshToken = "";
+      val.suspend = false;
+      val.token = "";
+      val.totalRating = 0;
+      val.totalRides = 0;
+    });
+  }
+
   void savePassengerData(dynamic data) {
     passenger.update((val) {
       val!.id = data["id"];
@@ -71,19 +87,7 @@ class UserController extends GetxController {
   }
 
   void signOutUser() {
-    passenger.update((val) {
-      val!.id = "";
-      val.email = "";
-      val.enabled = false;
-      val.name = "";
-      val.pastRides = [];
-      val.phone = "";
-      val.refreshToken = "";
-      val.suspend = false;
-      val.token = "";
-      val.totalRating = 0;
-      val.totalRides = 0;
-    });
+    clearData();
   }
 
   // submit otp from MobileNumberVerification

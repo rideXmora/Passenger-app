@@ -56,6 +56,7 @@ class AuthController extends GetxController {
           } else {
             debugPrint("token valid");
             dynamic response = await profile(token: token);
+            Get.find<UserController>().clearData();
             //change
             Get.find<UserController>().updatePassengerData(
               response["body"],
@@ -118,7 +119,7 @@ class AuthController extends GetxController {
           "refreshToken",
           refreshToken,
         );
-        debugPrint(response["enabled"].toString());
+        Get.find<UserController>().clearData();
         if (response["body"]["enabled"]) {
           Get.find<UserController>().savePassengerData(response["body"]);
           debugPrint("passenger object\n" +
@@ -146,7 +147,6 @@ class AuthController extends GetxController {
           name: name,
           email: email,
           token: Get.find<UserController>().passenger.value.token);
-      debugPrint(response["enabled"].toString());
 
       if (!response["error"]) {
         if (response["body"]["enabled"]) {
