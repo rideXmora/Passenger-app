@@ -10,8 +10,10 @@ import 'package:passenger_app/pages/home/map_screens/widgets/floating_panel/ride
 import 'package:passenger_app/pages/home/map_screens/widgets/floating_panel/select_vechicle_type_floating_panel.dart';
 import 'package:passenger_app/pages/home/map_screens/widgets/pop_up/Rate_and_comment.dart';
 import 'package:passenger_app/pages/home/map_screens/widgets/pop_up/trip_completed.dart';
-import 'package:passenger_app/utils/trip_state_enum.dart';
+import 'package:passenger_app/utils/ride_request_state_enum.dart';
+import 'package:passenger_app/utils/ride_state_enum.dart';
 import 'package:passenger_app/theme/colors.dart';
+import 'package:passenger_app/widgets/secondary_button_with_icon.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class MapScreen extends StatefulWidget {
@@ -55,7 +57,8 @@ class _MapScreenState extends State<MapScreen> {
     vechicleType: "Toyota Corolla",
   );
 
-  TripState tripState = TripState.SELECTVECHICLE;
+  RideState rideState = RideState.NOTRIP;
+  RideRequestState rideRequest = RideRequestState.NOTRIP;
 
   int rating = 1;
   TextEditingController comment = TextEditingController();
@@ -69,7 +72,7 @@ class _MapScreenState extends State<MapScreen> {
     });
   }
 
-  Widget _floatingCollapsed(TripState state) {
+  Widget _floatingCollapsed(RideState state, RideRequestState rideRequest) {
     return Container(
       decoration: BoxDecoration(
         color: primaryColorDark,
@@ -98,15 +101,22 @@ class _MapScreenState extends State<MapScreen> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: Text(
-                    state == TripState.SELECTVECHICLE
+                    rideRequest == RideRequestState.SELECTVECHICLE
                         ? "Confirm ride"
-                        : state == TripState.FINDINGRIDE
+                        : rideRequest == RideRequestState.PENDING
                             ? "Finding ride"
-                            : state == TripState.DRIVERCOMMING
+                            : state == RideState.ACCEPTED
                                 ? "Driver is comming"
-                                : state == TripState.GOINGTODESTINATION
-                                    ? "Going to destination"
-                                    : "",
+                                : state == RideState.ARRIVED
+                                    ? "Driver has arrived"
+                                    : state == RideState.PICKED
+                                        ? "Going to destination"
+                                        : rideState == RideState.DROPPED ||
+                                                rideState ==
+                                                    RideState
+                                                        .DRIVERRATEANDCOMMENT
+                                            ? "Ride Ended"
+                                            : "",
                     style: TextStyle(
                       color: primaryColorWhite,
                       fontSize: 18,
@@ -122,9 +132,71 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
+  void selectVehicleOnPressedPending() {
+    setState(() {
+      rideRequest = RideRequestState.PENDING;
+    });
+  }
+
+  void selectVehicleOnSelect(String value) {
+    setState(() {
+      slectedMethod = methods[int.parse(value)]["index"];
+    });
+  }
+
+  void pendingOnPressedCancel() {
+    setState(() {
+      rideRequest = RideRequestState.ACCEPTED;
+      rideState = RideState.ACCEPTED;
+      //real action is cancel as below
+      // rideRequest = RideRequestState.NOTRIP;
+      // rideState = RideState.NOTRIP;
+    });
+  }
+
+  void acceptedOnPressedCall() {
+    setState(() {
+      if (rideState == RideState.ACCEPTED) {
+        rideState = RideState.ARRIVED;
+      } else {
+        rideState = RideState.PICKED;
+      }
+    });
+    // real action is to call driver
+  }
+
+  void pickedOnPressedCall() {
+    setState(() {
+      if (rideState == RideState.PICKED) {
+        rideState = RideState.DROPPED;
+      } else if (rideState == RideState.DROPPED) {
+        rideState = RideState.DRIVERRATEANDCOMMENT;
+      } else {
+        rideState = RideState.FINISHED;
+      }
+    });
+    // real action is to call driver
+  }
+
+  void tripCompletedOnPressed() {
+    setState(() {
+      rideState = RideState.PASSENGERRATEANDCOMMENT;
+    });
+  }
+
+  void rateAndCommentOnPressed() {
+    setState(() {
+      rideState = RideState.CONFIRMED;
+      rideState = RideState.NOTRIP;
+      rideRequest = RideRequestState.NOTRIP;
+      rating = 0;
+      comment.text = "";
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    // double width = MediaQuery.of(context).size.width;
+    double width = MediaQuery.of(context).size.width;
     // double height = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: primaryColorWhite,
@@ -163,93 +235,71 @@ class _MapScreenState extends State<MapScreen> {
                 ),
               ],
             ),
-            tripState == TripState.SELECTVECHICLE ||
-                    tripState == TripState.FINDINGRIDE ||
-                    tripState == TripState.DRIVERCOMMING ||
-                    tripState == TripState.GOINGTODESTINATION
+            rideRequest == RideRequestState.SELECTVECHICLE ||
+                    rideRequest == RideRequestState.PENDING ||
+                    rideState == RideState.ACCEPTED ||
+                    rideState == RideState.ARRIVED ||
+                    rideState == RideState.PICKED ||
+                    rideState == RideState.DROPPED ||
+                    rideState == RideState.DRIVERRATEANDCOMMENT
                 ? SlidingUpPanel(
                     renderPanelSheet: false,
-                    panel: tripState == TripState.SELECTVECHICLE
+                    panel: rideRequest == RideRequestState.SELECTVECHICLE
                         ? SelectVechicleTypeFloatingPanel(
                             paymentMethod: paymentMethod,
                             methods: methods,
                             slectedMethod: slectedMethod,
                             loading: loading,
-                            onSelect: (String value) {
-                              setState(() {
-                                slectedMethod =
-                                    methods[int.parse(value)]["index"];
-                              });
-                            },
-                            onPressed: () {
-                              setState(() {
-                                tripState = TripState.FINDINGRIDE;
-                              });
-                            },
+                            onSelect: selectVehicleOnSelect,
+                            onPressed: selectVehicleOnPressedPending,
                           )
-                        : tripState == TripState.FINDINGRIDE
+                        : rideRequest == RideRequestState.PENDING
                             ? FindingRideFloatingPanel(
                                 loading: loading,
-                                onPressed: () {
-                                  setState(() {
-                                    tripState = TripState.DRIVERCOMMING;
-                                  });
-                                },
+                                onPressed: pendingOnPressedCancel,
                               )
-                            : tripState == TripState.DRIVERCOMMING
+                            : rideState == RideState.ACCEPTED ||
+                                    rideState == RideState.ARRIVED
                                 ? RideFloatingPanel(
                                     driver: driver,
                                     time: "1 min",
-                                    tripState: tripState,
+                                    rideState: rideState,
                                     loading: loading,
-                                    onPressed: () {
-                                      setState(() {
-                                        tripState =
-                                            TripState.GOINGTODESTINATION;
-                                      });
-                                    },
+                                    onPressed: acceptedOnPressedCall,
                                   )
-                                : tripState == TripState.GOINGTODESTINATION
+                                : rideState == RideState.PICKED ||
+                                        rideState == RideState.DROPPED ||
+                                        rideState ==
+                                            RideState.DRIVERRATEANDCOMMENT
                                     ? RideFloatingPanel(
                                         driver: driver,
                                         time: "1 min",
-                                        tripState: tripState,
+                                        rideState: rideState,
                                         loading: loading,
-                                        onPressed: () {
-                                          setState(() {
-                                            tripState = TripState.TRIPCOMPLETED;
-                                          });
-                                        },
+                                        onPressed: pickedOnPressedCall,
                                       )
                                     : Container(),
-                    collapsed: _floatingCollapsed(tripState),
+                    collapsed: _floatingCollapsed(rideState, rideRequest),
                     backdropColor: Colors.transparent,
                     defaultPanelState: PanelState.OPEN,
-                    maxHeight: tripState == TripState.DRIVERCOMMING ||
-                            tripState == TripState.GOINGTODESTINATION
+                    maxHeight: rideState == RideState.ACCEPTED ||
+                            rideState == RideState.ARRIVED ||
+                            rideState == RideState.PICKED ||
+                            rideState == RideState.DROPPED ||
+                            rideState == RideState.DRIVERRATEANDCOMMENT
                         ? 270
                         : 360,
                   )
                 : Container(),
-            tripState == TripState.TRIPCOMPLETED
+            rideState == RideState.FINISHED
                 ? TripCompleted(
                     loading: loading,
-                    onPressed: () {
-                      setState(() {
-                        tripState = TripState.RATEANDCOMMENT;
-                      });
-                    },
+                    onPressed: tripCompletedOnPressed,
                   )
-                : tripState == TripState.RATEANDCOMMENT
+                : rideState == RideState.PASSENGERRATEANDCOMMENT
                     ? RateAndComment(
                         loading: loading,
-                        onPressed: () {
-                          setState(() {
-                            tripState = TripState.NOTRIP;
-                            rating = 0;
-                            comment.text = "";
-                          });
-                        },
+                        onPressed: rateAndCommentOnPressed,
                         rating: rating,
                         onRatingChanged1: () {
                           setState(() {
@@ -279,6 +329,29 @@ class _MapScreenState extends State<MapScreen> {
                         comment: comment,
                       )
                     : Container(),
+            Align(
+              alignment: Alignment.topCenter,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: SecondaryButtonWithIcon(
+                      icon: Icons.online_prediction,
+                      iconColor: primaryColorWhite,
+                      onPressed: () {
+                        setState(() {
+                          rideRequest = RideRequestState.SELECTVECHICLE;
+                        });
+                      },
+                      text: "get ride",
+                      boxColor: primaryColorDark,
+                      shadowColor: primaryColorDark,
+                      width: width,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),

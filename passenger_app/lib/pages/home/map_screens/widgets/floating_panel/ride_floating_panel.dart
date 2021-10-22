@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:passenger_app/modals/driver.dart';
-import 'package:passenger_app/utils/trip_state_enum.dart';
+import 'package:passenger_app/utils/ride_state_enum.dart';
 import 'package:passenger_app/theme/colors.dart';
 import 'package:passenger_app/widgets/secondary_button_with_icon.dart';
 import 'package:passenger_app/widgets/simple_icon_text_box.dart';
@@ -11,7 +11,7 @@ class RideFloatingPanel extends StatelessWidget {
     Key? key,
     required this.loading,
     required this.driver,
-    required this.tripState,
+    required this.rideState,
     required this.time,
     this.onPressed,
   }) : super(key: key);
@@ -19,7 +19,7 @@ class RideFloatingPanel extends StatelessWidget {
   final onPressed;
   final String time;
   final Driver driver;
-  final TripState tripState;
+  final RideState rideState;
   final bool loading;
 
   @override
@@ -48,11 +48,16 @@ class RideFloatingPanel extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Text(
-              tripState == TripState.DRIVERCOMMING
+              rideState == RideState.ACCEPTED
                   ? "Driver is comming"
-                  : tripState == TripState.GOINGTODESTINATION
-                      ? "Going to Destination"
-                      : "",
+                  : rideState == RideState.ARRIVED
+                      ? "Driver has arrived"
+                      : rideState == RideState.PICKED
+                          ? "Going to destination"
+                          : rideState == RideState.DROPPED ||
+                                  rideState == RideState.DRIVERRATEANDCOMMENT
+                              ? "Ride Ended"
+                              : "",
               style: TextStyle(
                 color: primaryColorBlack,
                 fontSize: 18,
@@ -135,23 +140,42 @@ class RideFloatingPanel extends StatelessWidget {
             Spacer(
               flex: 3,
             ),
-            SimpleIconTextBox(
-              icon: Icons.timer,
-              text: "$time remaining",
-            ),
+            rideState == RideState.DROPPED ||
+                    rideState == RideState.DRIVERRATEANDCOMMENT
+                ? Center(
+                    child: Text(
+                      "You have arrived the destination. Wait few seconds until driver finish the trip.",
+                      style: TextStyle(
+                        color: primaryColorLight,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      maxLines: 2,
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  )
+                : SimpleIconTextBox(
+                    icon: Icons.timer,
+                    text: "$time remaining",
+                  ),
             Spacer(
               flex: 3,
             ),
-            SecondaryButtonWithIcon(
-              icon: Icons.phone,
-              iconColor: primaryColorWhite,
-              width: MediaQuery.of(context).size.width * 0.5,
-              onPressed: onPressed,
-              loading: loading,
-              text: "Call Driver",
-              boxColor: primaryColorLight,
-              shadowColor: Colors.transparent,
-            )
+            rideState == RideState.PICKED ||
+                    rideState == RideState.DROPPED ||
+                    rideState == RideState.DRIVERRATEANDCOMMENT
+                ? Container()
+                : SecondaryButtonWithIcon(
+                    icon: Icons.phone,
+                    iconColor: primaryColorWhite,
+                    width: MediaQuery.of(context).size.width * 0.5,
+                    onPressed: onPressed,
+                    loading: loading,
+                    text: "Call Driver",
+                    boxColor: primaryColorLight,
+                    shadowColor: Colors.transparent,
+                  )
           ],
         ),
       ),
