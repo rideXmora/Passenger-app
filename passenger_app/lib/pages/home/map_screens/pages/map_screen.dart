@@ -3,8 +3,11 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:passenger_app/controllers/ride_controller.dart';
 import 'package:passenger_app/modals/driver.dart';
+import 'package:passenger_app/modals/location.dart';
 import 'package:passenger_app/pages/home/map_screens/widgets/floating_panel/finding_ride_floating_panel.dart';
 import 'package:passenger_app/pages/home/map_screens/widgets/floating_panel/ride_floating_panel.dart';
 import 'package:passenger_app/pages/home/map_screens/widgets/floating_panel/select_vechicle_type_floating_panel.dart';
@@ -132,10 +135,31 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
-  void selectVehicleOnPressedPending() {
-    setState(() {
-      rideRequest = RideRequestState.PENDING;
-    });
+  void selectVehicleOnPressedPending() async {
+    if (!loading) {
+      setState(() {
+        loading = true;
+      });
+      bool result = await Get.find<RideController>().rideRequestSending(
+        startLocation: Location(
+          x: 0,
+          y: 0,
+        ),
+        endLocation: Location(
+          x: 10,
+          y: 10,
+        ),
+        distance: 10,
+      );
+      if (result) {
+        setState(() {
+          rideRequest = RideRequestState.PENDING;
+        });
+      }
+      setState(() {
+        loading = false;
+      });
+    }
   }
 
   void selectVehicleOnSelect(String value) {
