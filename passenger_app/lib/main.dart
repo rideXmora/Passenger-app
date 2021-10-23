@@ -1,48 +1,42 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:passenger_app/pages/bottom_navigation_bar_handler.dart';
+import 'package:passenger_app/pages/splash_screen.dart';
+import 'package:passenger_app/theme/colors.dart';
+import 'package:passenger_app/utils/local_string.dart';
+
+import 'controllers/app_binding.dart';
 
 void main() {
-  runApp(MyApp());
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark));
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((_) {
+    runApp(new MyApp());
+  });
 }
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'RideX Passenger APP',
+    return GetMaterialApp(
+      title: 'RideX',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primaryColor: primaryColor,
+        primaryColorDark: primaryColorDark,
+        primaryColorLight: primaryColorLight,
+        backgroundColor: primaryColorWhite,
       ),
-      home: MyHomePage(),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key}) : super(key: key);
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Welcome to RideX Passenger APP"),
-      ),
-      body: Center(
-          child: Text(
-        "RideX Passenger",
-        style: TextStyle(
-          fontSize: 40,
-          fontWeight: FontWeight.w700,
-        ),
-      )),
+      //home: GettingStartedScreen(),
+      translations: LocalString(),
+      locale: Locale('en', 'US'),
+      initialBinding: AppBinding(),
+      home: SplashScreen(),
     );
   }
 }

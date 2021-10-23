@@ -1,7 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.passenger_app">
+    <uses-permission android:name="android.permission.INTERNET"/>
    <application
-        android:label="passenger_app"
+        android:label="RideX"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
@@ -37,5 +38,8 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <meta-data android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAuvO3-9VVX4IhAf47TePWq_z6F6hIED1g"/>
+        
     </application>
 </manifest>
