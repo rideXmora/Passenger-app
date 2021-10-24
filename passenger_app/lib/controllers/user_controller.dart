@@ -38,6 +38,10 @@ class UserController extends GetxController {
     });
   }
 
+  void signOutUser() {
+    clearData();
+  }
+
   void savePassengerData(dynamic data) {
     passenger.update((val) {
       val!.id = data["id"];
@@ -84,10 +88,6 @@ class UserController extends GetxController {
       val!.email = data["email"] == null ? "" : data["email"];
       val.name = data["name"] == null ? "" : data["name"];
     });
-  }
-
-  void signOutUser() {
-    clearData();
   }
 
   // submit otp from MobileNumberVerification

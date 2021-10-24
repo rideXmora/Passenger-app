@@ -18,6 +18,14 @@ import 'package:passenger_app/utils/ride_state_enum.dart';
 import 'package:passenger_app/theme/colors.dart';
 import 'package:passenger_app/widgets/secondary_button_with_icon.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+// import 'package:sockjs_client_wrapper/sockjs_client_wrapper.dart';
+// import "package:stomp/stomp.dart";
+// import "package:stomp/vm.dart" show connect;
+// import 'dart:convert';
+
+// import 'package:stomp_dart_client/stomp.dart';
+// import 'package:stomp_dart_client/stomp_config.dart';
+// import 'package:stomp_dart_client/stomp_frame.dart';
 
 class MapScreen extends StatefulWidget {
   MapScreen({
@@ -38,6 +46,9 @@ final CameraPosition _kGooglePlex = CameraPosition(
 
 class _MapScreenState extends State<MapScreen> {
   bool loading = false;
+  bool loadingGreen = false;
+  bool loadingRed = false;
+
   TextEditingController paymentMethod = TextEditingController();
   int slectedMethod = 0;
   List<Map<String, dynamic>> methods = [
@@ -73,7 +84,57 @@ class _MapScreenState extends State<MapScreen> {
       paymentMethod.text = methods[0]["method"];
       slectedMethod = 0;
     });
+    // loadSocket();
   }
+
+  // void loadSocket() {
+  //   // final echoUri = Uri.parse('http://localhost:8080/ws');
+  //   // final options = SockJSOptions(
+  //   //     transports: ['websocket', 'xhr-streaming', 'xhr-polling']);
+  //   // final socket = SockJSClient(echoUri, options: options);
+
+  //   // connect("foo.server.com").then((StompClient client) {
+  //   //   client.subscribeString("/foo",
+  //   //       (Map<String, String> headers, String message) {
+  //   //     print("Recieve $message");
+  //   //   },socket);
+
+  //   //   client.sendString("/foo", "Hi, Stomp");
+  //   // });
+  //   stompClient = StompClient(
+  //     config: StompConfig(
+  //       url: 'http://localhost:8080/ws',
+  //       onConnect: onConnect,
+  //       beforeConnect: () async {
+  //         print('waiting to connect...');
+  //         await Future.delayed(Duration(milliseconds: 200));
+  //         print('connecting...');
+  //       },
+  //       onWebSocketError: (dynamic error) => print(error.toString()),
+  //       stompConnectHeaders: {'Authorization': 'Bearer yourToken'},
+  //       webSocketConnectHeaders: {'Authorization': 'Bearer yourToken'},
+  //     ),
+  //   );
+  // }
+
+  // void onConnect(StompFrame frame) {
+  //   stompClient.subscribe(
+  //     destination: '/ride/request',
+  //     callback: (frame) {
+  //       List<dynamic>? result = json.decode(frame.body!);
+  //       print(result);
+  //     },
+  //   );
+
+  //   Timer.periodic(Duration(seconds: 10), (_) {
+  //     stompClient.send(
+  //       destination: '/app/request',
+  //       body: json.encode({'a': 123}),
+  //     );
+  //   });
+  // }
+
+  // late final stompClient;
 
   Widget _floatingCollapsed(RideState state, RideRequestState rideRequest) {
     return Container(
@@ -135,10 +196,10 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
-  void selectVehicleOnPressedPending() async {
-    if (!loading) {
+  void selectVehicleOnPressedToPending() async {
+    if (!loadingGreen) {
       setState(() {
-        loading = true;
+        loadingGreen = true;
       });
       bool result = await Get.find<RideController>().rideRequestSending(
         startLocation: Location(
@@ -157,7 +218,7 @@ class _MapScreenState extends State<MapScreen> {
         });
       }
       setState(() {
-        loading = false;
+        loadingGreen = false;
       });
     }
   }
@@ -168,38 +229,70 @@ class _MapScreenState extends State<MapScreen> {
     });
   }
 
-  void pendingOnPressedCancel() {
-    setState(() {
-      rideRequest = RideRequestState.ACCEPTED;
-      rideState = RideState.ACCEPTED;
-      //real action is cancel as below
-      // rideRequest = RideRequestState.NOTRIP;
-      // rideState = RideState.NOTRIP;
-    });
+  void pendingOnPressedToCancel() async {
+    if (!loadingGreen) {
+      setState(() {
+        loadingGreen = true;
+      });
+      bool result = await Get.find<RideController>().rideDetails();
+      if (result) {
+        setState(() {
+          rideRequest = RideRequestState.ACCEPTED;
+          rideState = RideState.ACCEPTED;
+          //real action is cancel as below
+          // rideRequest = RideRequestState.NOTRIP;
+          // rideState = RideState.NOTRIP;
+        });
+      }
+      setState(() {
+        loadingGreen = false;
+      });
+    }
   }
 
-  void acceptedOnPressedCall() {
-    setState(() {
-      if (rideState == RideState.ACCEPTED) {
-        rideState = RideState.ARRIVED;
-      } else {
-        rideState = RideState.PICKED;
+  void acceptedOnPressedToCall() async {
+    if (!loadingGreen) {
+      setState(() {
+        loadingGreen = true;
+      });
+      bool result = await Get.find<RideController>().rideDetails();
+      if (result) {
+        setState(() {
+          if (rideState == RideState.ACCEPTED) {
+            rideState = RideState.ARRIVED;
+          } else {
+            rideState = RideState.PICKED;
+          }
+        });
+        // real action is to call driver
       }
-    });
-    // real action is to call driver
+      setState(() {
+        loadingGreen = false;
+      });
+    }
   }
 
-  void pickedOnPressedCall() {
-    setState(() {
-      if (rideState == RideState.PICKED) {
-        rideState = RideState.DROPPED;
-      } else if (rideState == RideState.DROPPED) {
-        rideState = RideState.DRIVERRATEANDCOMMENT;
-      } else {
-        rideState = RideState.FINISHED;
+  void pickedOnPressedToCall() async {
+    if (!loadingGreen) {
+      setState(() {
+        loadingGreen = true;
+      });
+      bool result = await Get.find<RideController>().rideDetails();
+      if (result) {
+        setState(() {
+          if (rideState == RideState.PICKED) {
+            rideState = RideState.DROPPED;
+          } else if (rideState == RideState.DROPPED ||
+              rideState == RideState.DRIVERRATEANDCOMMENT) {
+            rideState = RideState.FINISHED;
+          }
+        });
+        // real action is to call driver
       }
-    });
-    // real action is to call driver
+      setState(() {
+        loadingGreen = false;
+      });
+    }
   }
 
   void tripCompletedOnPressed() {
@@ -208,14 +301,52 @@ class _MapScreenState extends State<MapScreen> {
     });
   }
 
-  void rateAndCommentOnPressed() {
-    setState(() {
-      rideState = RideState.CONFIRMED;
-      rideState = RideState.NOTRIP;
-      rideRequest = RideRequestState.NOTRIP;
-      rating = 0;
-      comment.text = "";
-    });
+  void rateAndCommentOnPressed() async {
+    if (!loadingGreen) {
+      setState(() {
+        loadingGreen = true;
+      });
+      bool result = await Get.find<RideController>().rideConfirmed(
+        passengerFeedback: "new feedback",
+        driverRating: 3,
+      );
+      if (result) {
+        setState(() {
+          rideState = RideState.CONFIRMED;
+          rideState = RideState.NOTRIP;
+          rideRequest = RideRequestState.NOTRIP;
+          rating = 0;
+          comment.text = "";
+        });
+      }
+      setState(() {
+        loadingGreen = false;
+      });
+    }
+  }
+
+  void rateAndCommentOnCancel() async {
+    if (!loadingRed) {
+      setState(() {
+        loadingRed = true;
+      });
+      bool result = await Get.find<RideController>().rideConfirmed(
+        passengerFeedback: "",
+        driverRating: 0,
+      );
+      if (result) {
+        setState(() {
+          rideState = RideState.CONFIRMED;
+          rideState = RideState.NOTRIP;
+          rideRequest = RideRequestState.NOTRIP;
+          rating = 0;
+          comment.text = "";
+        });
+      }
+      setState(() {
+        loadingRed = false;
+      });
+    }
   }
 
   @override
@@ -273,14 +404,14 @@ class _MapScreenState extends State<MapScreen> {
                             paymentMethod: paymentMethod,
                             methods: methods,
                             slectedMethod: slectedMethod,
-                            loading: loading,
+                            loading: loadingGreen,
                             onSelect: selectVehicleOnSelect,
-                            onPressed: selectVehicleOnPressedPending,
+                            onPressed: selectVehicleOnPressedToPending,
                           )
                         : rideRequest == RideRequestState.PENDING
                             ? FindingRideFloatingPanel(
-                                loading: loading,
-                                onPressed: pendingOnPressedCancel,
+                                loading: loadingGreen,
+                                onPressed: pendingOnPressedToCancel,
                               )
                             : rideState == RideState.ACCEPTED ||
                                     rideState == RideState.ARRIVED
@@ -288,8 +419,8 @@ class _MapScreenState extends State<MapScreen> {
                                     driver: driver,
                                     time: "1 min",
                                     rideState: rideState,
-                                    loading: loading,
-                                    onPressed: acceptedOnPressedCall,
+                                    loading: loadingGreen,
+                                    onPressed: acceptedOnPressedToCall,
                                   )
                                 : rideState == RideState.PICKED ||
                                         rideState == RideState.DROPPED ||
@@ -299,8 +430,8 @@ class _MapScreenState extends State<MapScreen> {
                                         driver: driver,
                                         time: "1 min",
                                         rideState: rideState,
-                                        loading: loading,
-                                        onPressed: pickedOnPressedCall,
+                                        loading: loadingGreen,
+                                        onPressed: pickedOnPressedToCall,
                                       )
                                     : Container(),
                     collapsed: _floatingCollapsed(rideState, rideRequest),
@@ -322,8 +453,12 @@ class _MapScreenState extends State<MapScreen> {
                   )
                 : rideState == RideState.PASSENGERRATEANDCOMMENT
                     ? RateAndComment(
-                        loading: loading,
+                        greenTopic: "Submit",
+                        loadingGreen: loadingGreen,
+                        redTopic: "Cancel",
+                        loadingRed: loadingRed,
                         onPressed: rateAndCommentOnPressed,
+                        onCancel: rateAndCommentOnCancel,
                         rating: rating,
                         onRatingChanged1: () {
                           setState(() {

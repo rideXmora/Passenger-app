@@ -78,17 +78,24 @@ class RideFloatingPanel extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 10),
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image:
-                              AssetImage("assets/images/images/user_icon.png"),
+                  GestureDetector(
+                    onTap: rideState == RideState.PICKED ||
+                            rideState == RideState.DROPPED ||
+                            rideState == RideState.DRIVERRATEANDCOMMENT
+                        ? onPressed
+                        : () {},
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 10),
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                            fit: BoxFit.cover,
+                            image: AssetImage(
+                                "assets/images/images/user_icon.png"),
+                          ),
                         ),
                       ),
                     ),

@@ -46,6 +46,9 @@ dependencies:
   http: ^0.13.3
   shared_preferences:
   jwt_decoder: ^2.0.1
+  # sockjs_client_wrapper:
+  # stomp:
+  # #stomp_dart_client:
 
 dev_dependencies:
   flutter_test:

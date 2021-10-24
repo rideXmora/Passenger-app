@@ -10,6 +10,7 @@ import 'package:passenger_app/modals/ride_request_passenger.dart';
 import 'package:passenger_app/modals/ride_request_res.dart';
 import 'package:passenger_app/modals/ride_request_vehicle.dart';
 import 'package:passenger_app/utils/ride_request_state_enum.dart';
+import 'package:passenger_app/utils/ride_state_enum.dart';
 
 class RideController extends GetxController {
   var ride = Ride(
@@ -35,6 +36,17 @@ class RideController extends GetxController {
     RideRequestRes rideRequestRes = RideRequestRes.fromJson(response);
     ride.update((val) {
       val!.rideRequest = rideRequestRes;
+    });
+  }
+
+  void updateRide(dynamic response) {
+    RideRequestRes rideRequestRes =
+        RideRequestRes.fromJson(response["rideRequest"]);
+    ride.update((val) {
+      val!.id = response["id"];
+      val.rideRequest = rideRequestRes;
+      val.payment = response["payment"] == null ? 0 : response["payment"];
+      val.rideStatus = getRideState(response["rideStatus"]);
     });
   }
 
@@ -73,6 +85,70 @@ class RideController extends GetxController {
 
       if (!response["error"]) {
         updateRideRequest(
+          response["body"],
+        );
+        debugPrint("ride : " + ride.value.toJson().toString());
+
+        debugPrint(
+            "ride - request : " + ride.value.rideRequest.toJson().toString());
+        if (getRideRequestState(response["body"]["status"]) ==
+            RideRequestState.PENDING) {
+          return true;
+        } else {
+          Get.snackbar("Something is wrong!!!", "Please try again.");
+          return false;
+        }
+      } else {
+        Get.snackbar("Something is wrong!!!", "Please try again.");
+        return false;
+      }
+    } catch (e) {
+      Get.snackbar("Something is wrong!!!", "Please try again.");
+      return false;
+    }
+  }
+
+  Future<bool> rideDetails() async {
+    try {
+      String id = "61738b977ccb6600387733dc";
+      dynamic response = await getRide(
+        id: id,
+        token: Get.find<UserController>().passenger.value.token,
+      );
+
+      if (!response["error"]) {
+        updateRide(
+          response["body"],
+        );
+        debugPrint("ride : " + ride.value.toJson().toString());
+
+        debugPrint(
+            "ride - request : " + ride.value.rideRequest.toJson().toString());
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> rideConfirmed({
+    required passengerFeedback,
+    required driverRating,
+  }) async {
+    try {
+      //hardcoded id
+      String id = "61738b977ccb6600387733dc";
+      dynamic response = await confirm(
+        id: id,
+        passengerFeedback: passengerFeedback,
+        driverRating: driverRating,
+        token: Get.find<UserController>().passenger.value.token,
+      );
+
+      if (!response["error"]) {
+        updateRide(
           response["body"],
         );
         debugPrint("ride : " + ride.value.toJson().toString());
