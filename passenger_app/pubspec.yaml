@@ -49,6 +49,7 @@ dependencies:
   # sockjs_client_wrapper:
   # stomp:
   # #stomp_dart_client:
+  geolocator:
 
 dev_dependencies:
   flutter_test:

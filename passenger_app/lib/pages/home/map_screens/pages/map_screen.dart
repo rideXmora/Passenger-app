@@ -27,6 +27,8 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 // import 'package:stomp_dart_client/stomp_config.dart';
 // import 'package:stomp_dart_client/stomp_frame.dart';
 
+import 'package:geolocator/geolocator.dart';
+
 class MapScreen extends StatefulWidget {
   MapScreen({
     Key? key,
@@ -36,13 +38,6 @@ class MapScreen extends StatefulWidget {
   @override
   _MapScreenState createState() => _MapScreenState();
 }
-
-Completer<GoogleMapController> _controller = Completer();
-
-final CameraPosition _kGooglePlex = CameraPosition(
-  target: LatLng(37.42796133580664, -122.085749655962),
-  zoom: 14.4746,
-);
 
 class _MapScreenState extends State<MapScreen> {
   bool loading = false;
@@ -76,6 +71,31 @@ class _MapScreenState extends State<MapScreen> {
 
   int rating = 1;
   TextEditingController comment = TextEditingController();
+
+  final CameraPosition _kGooglePlex = CameraPosition(
+    target: LatLng(37.42796133580664, -122.085749655962),
+    zoom: 14.4746,
+  );
+
+  Completer<GoogleMapController> _controllerGoogleMap = Completer();
+
+  late GoogleMapController newGoogleMapController;
+
+  late Position currentPosition;
+
+  Future<void> locatePosition() async {
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    currentPosition = position;
+
+    LatLng latLastPosition = LatLng(position.latitude, position.longitude);
+
+    CameraPosition cameraPosition =
+        CameraPosition(target: latLastPosition, zoom: 14);
+
+    newGoogleMapController
+        .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+  }
 
   @override
   void initState() {
@@ -383,8 +403,15 @@ class _MapScreenState extends State<MapScreen> {
                   child: GoogleMap(
                     mapType: MapType.normal,
                     initialCameraPosition: _kGooglePlex,
+                    myLocationButtonEnabled: true,
+                    myLocationEnabled: true,
+                    zoomGesturesEnabled: true,
+                    zoomControlsEnabled: true,
                     onMapCreated: (GoogleMapController controller) {
-                      _controller.complete(controller);
+                      _controllerGoogleMap.complete(controller);
+                      newGoogleMapController = controller;
+
+                      locatePosition();
                     },
                   ),
                 ),
