@@ -9,6 +9,7 @@ import 'package:passenger_app/modals/ride_request_driver.dart';
 import 'package:passenger_app/modals/ride_request_passenger.dart';
 import 'package:passenger_app/modals/ride_request_res.dart';
 import 'package:passenger_app/modals/ride_request_vehicle.dart';
+import 'package:passenger_app/utils/firebase_notification_handler.dart';
 import 'package:passenger_app/utils/ride_request_state_enum.dart';
 import 'package:passenger_app/utils/ride_state_enum.dart';
 
@@ -76,6 +77,14 @@ class RideController extends GetxController {
       //   },
       //   "error": false,
       // };
+      try {
+        FirebaseNotifications firebaseNotifications = FirebaseNotifications();
+        await firebaseNotifications.startListening();
+        await firebaseNotifications.subscribeTopic("addRideRequest");
+      } catch (e) {
+        Get.snackbar("Something is wrong!!!", "Please try again.");
+        return false;
+      }
       dynamic response = await request(
         startLocation: startLocation,
         endLocation: endLocation,

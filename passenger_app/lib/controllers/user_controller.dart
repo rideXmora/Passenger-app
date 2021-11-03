@@ -20,6 +20,7 @@ class UserController extends GetxController {
     token: "",
     totalRating: 0,
     totalRides: 0,
+    notificationToken: "",
   ).obs;
 
   void clearData() {
@@ -35,6 +36,7 @@ class UserController extends GetxController {
       val.token = "";
       val.totalRating = 0;
       val.totalRides = 0;
+      val.notificationToken = "";
     });
   }
 
@@ -56,6 +58,8 @@ class UserController extends GetxController {
       val.refreshToken = data["refreshToken"];
       val.enabled = data["enabled"] == null ? false : data["enabled"];
       val.suspend = data["suspend"] == null ? false : data["suspend"];
+      val.notificationToken =
+          data["notificationToken"] == null ? "" : data["notificationToken"];
     });
   }
 
@@ -78,6 +82,8 @@ class UserController extends GetxController {
       val.refreshToken = refreshToken;
       val.enabled = data["enabled"] == null ? false : data["enabled"];
       val.suspend = data["suspend"] == null ? false : data["suspend"];
+      val.notificationToken =
+          data["notificationToken"] == null ? "" : data["notificationToken"];
     });
   }
 
@@ -130,5 +136,9 @@ class UserController extends GetxController {
       }
     }
     return false;
+  }
+
+  void updateNotificationToken(String token) {
+    passenger.value.notificationToken = token;
   }
 }

@@ -21,6 +21,7 @@ class Passenger {
     required this.refreshToken,
     required this.enabled,
     required this.suspend,
+    required this.notificationToken,
   });
 
   String id;
@@ -34,6 +35,7 @@ class Passenger {
   String refreshToken;
   bool enabled;
   bool suspend;
+  String notificationToken;
 
   factory Passenger.fromJson(Map<dynamic, dynamic> json) => Passenger(
         id: json["id"],
@@ -47,6 +49,7 @@ class Passenger {
         refreshToken: json["refreshToken"],
         enabled: json["enabled"],
         suspend: json["suspend"],
+        notificationToken: json["notificationToken"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -61,5 +64,6 @@ class Passenger {
         "refreshToken": refreshToken,
         "enabled": enabled,
         "suspend": suspend,
+        "notificationToken": notificationToken,
       };
 }
