@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:passenger_app/modals/driver.dart';
+import 'package:passenger_app/modals/ride_request_driver.dart';
 import 'package:passenger_app/utils/ride_state_enum.dart';
 import 'package:passenger_app/theme/colors.dart';
 import 'package:passenger_app/widgets/secondary_button_with_icon.dart';
@@ -18,7 +19,7 @@ class RideFloatingPanel extends StatelessWidget {
 
   final onPressed;
   final String time;
-  final Driver driver;
+  final RideRequestDriver driver;
   final RideState rideState;
   final bool loading;
 
@@ -78,17 +79,24 @@ class RideFloatingPanel extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 10),
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image:
-                              AssetImage("assets/images/images/user_icon.png"),
+                  GestureDetector(
+                    onTap: rideState == RideState.PICKED ||
+                            rideState == RideState.DROPPED ||
+                            rideState == RideState.DRIVERRATEANDCOMMENT
+                        ? onPressed
+                        : () {},
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 10),
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                            fit: BoxFit.cover,
+                            image: AssetImage(
+                                "assets/images/images/user_icon.png"),
+                          ),
                         ),
                       ),
                     ),
@@ -109,7 +117,7 @@ class RideFloatingPanel extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                         ),
                         Text(
-                          driver.vechicleType,
+                          driver.vehicle.model,
                           style: TextStyle(
                             color: primaryColorWhite,
                             fontSize: 16,

@@ -89,10 +89,6 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  CustomBackButton(),
-                  SizedBox(
-                    height: 30,
-                  ),
                   Text(
                     "Let's get started now",
                     style: TextStyle(

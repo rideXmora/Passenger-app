@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -10,6 +11,7 @@ import 'package:passenger_app/pages/sign_in_up/pages/getting_started_screen.dart
 import 'package:passenger_app/pages/sign_in_up/pages/language_selection_screen.dart';
 import 'package:passenger_app/pages/sign_in_up/pages/mobile_number_verification_screen.dart';
 import 'package:passenger_app/pages/sign_in_up/pages/registration_screen.dart';
+import 'package:passenger_app/utils/firebase_notification_handler.dart';
 import 'package:passenger_app/utils/validation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,6 +19,9 @@ class AuthController extends GetxController {
   var languageSelection = 1.obs;
   // SplashScreen data loading
   Future<void> loadData() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp();
+
     SharedPreferences store = await SharedPreferences.getInstance();
     String token = store.getString("token") == null
         ? ''
@@ -47,6 +52,15 @@ class AuthController extends GetxController {
           Get.offAll(GettingStartedScreen());
         } else {
           debugPrint("token not null");
+          try {
+            FirebaseNotifications firebaseNotifications =
+                FirebaseNotifications();
+            await firebaseNotifications.setupFirebase();
+            await firebaseNotifications.startListening();
+          } catch (e) {
+            debugPrint("firebase notification error");
+            Get.offAll(GettingStartedScreen());
+          }
           bool isExpired = await isTokenExpired();
           if (isExpired) {
             debugPrint("token expired refresh need");
@@ -107,6 +121,14 @@ class AuthController extends GetxController {
     if (otp.length < 6) {
       Get.snackbar("OTP is not valid!!!", "Otp must have 6 characters");
     } else {
+      try {
+        FirebaseNotifications firebaseNotifications = FirebaseNotifications();
+        await firebaseNotifications.setupFirebase();
+        await firebaseNotifications.startListening();
+      } catch (e) {
+        debugPrint("firebase notification error");
+        return;
+      }
       dynamic response = await phoneVerify(phone: phone, otp: otp);
       if (!response["error"]) {
         String token = response["body"]["token"];
@@ -143,10 +165,22 @@ class AuthController extends GetxController {
       Get.snackbar("Name is not valid!!!", "Name field cannot be empty");
     } else if (!isEmailValid(email)) {
     } else {
+      String notificationToken = "";
+      try {
+        FirebaseNotifications firebaseNotifications = FirebaseNotifications();
+        await firebaseNotifications.setupFirebase();
+        await firebaseNotifications.startListening();
+        notificationToken = await firebaseNotifications.getToken();
+      } catch (e) {
+        Get.snackbar("Something is wrong!!!", "Please try again");
+        return;
+      }
       dynamic response = await profileComplete(
-          name: name,
-          email: email,
-          token: Get.find<UserController>().passenger.value.token);
+        name: name,
+        email: email,
+        notificationToken: notificationToken,
+        token: Get.find<UserController>().passenger.value.token,
+      );
 
       if (!response["error"]) {
         if (response["body"]["enabled"]) {

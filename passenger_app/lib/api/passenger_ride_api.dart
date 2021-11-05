@@ -48,3 +48,15 @@ Future<dynamic> confirm(
   );
   return response;
 }
+
+Future<dynamic> cancel({required String id, required String token}) async {
+  String url = '/api/passenger/ride/request/timeout';
+  dynamic response = await postRequest(
+    url: url,
+    data: {
+      "id": id,
+    },
+    token: token,
+  );
+  return response;
+}

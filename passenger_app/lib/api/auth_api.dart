@@ -26,16 +26,19 @@ Future<dynamic> phoneVerify(
   return response;
 }
 
-Future<dynamic> profileComplete(
-    {required String name,
-    required String email,
-    required String token}) async {
+Future<dynamic> profileComplete({
+  required String name,
+  required String email,
+  required String token,
+  required String notificationToken,
+}) async {
   String url = '/api/passenger/profileComplete';
   dynamic response = await postRequest(
     url: url,
     data: {
       "email": email,
       "name": name,
+      "notificationToken": notificationToken,
     },
     token: token,
   );
