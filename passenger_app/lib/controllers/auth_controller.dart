@@ -56,6 +56,7 @@ class AuthController extends GetxController {
             FirebaseNotifications firebaseNotifications =
                 FirebaseNotifications();
             await firebaseNotifications.setupFirebase();
+            await firebaseNotifications.startListening();
           } catch (e) {
             debugPrint("firebase notification error");
             Get.offAll(GettingStartedScreen());
@@ -123,6 +124,7 @@ class AuthController extends GetxController {
       try {
         FirebaseNotifications firebaseNotifications = FirebaseNotifications();
         await firebaseNotifications.setupFirebase();
+        await firebaseNotifications.startListening();
       } catch (e) {
         debugPrint("firebase notification error");
         return;
@@ -167,6 +169,7 @@ class AuthController extends GetxController {
       try {
         FirebaseNotifications firebaseNotifications = FirebaseNotifications();
         await firebaseNotifications.setupFirebase();
+        await firebaseNotifications.startListening();
         notificationToken = await firebaseNotifications.getToken();
       } catch (e) {
         Get.snackbar("Something is wrong!!!", "Please try again");

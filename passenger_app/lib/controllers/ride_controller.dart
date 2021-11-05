@@ -33,6 +33,30 @@ class RideController extends GetxController {
     ),
   ).obs;
 
+  void clearRide() {
+    ride.value = Ride(
+      id: "",
+      rideStatus: RideState.NOTRIP,
+      rideRequest: RideRequestRes(
+        status: RideRequestState.NOTRIP,
+        passenger: RideRequestPassenger(),
+        startLocation: Location(
+          x: 0,
+          y: 0,
+        ),
+        endLocation: Location(
+          x: 0,
+          y: 0,
+        ),
+        driver: RideRequestDriver(
+          vehicle: RideRequestVehicle(),
+        ),
+        organization: Organization(),
+        timestamp: DateTime.now(),
+      ),
+    );
+  }
+
   void updateRideRequest(dynamic response) {
     RideRequestRes rideRequestRes = RideRequestRes.fromJson(response);
     ride.update((val) {
@@ -57,34 +81,6 @@ class RideController extends GetxController {
     required double distance,
   }) async {
     try {
-      // dynamic response = {
-      //   "code": "response.statusCode",
-      //   "body": {
-      //     "id": "61729901a3a11b360bcbff61",
-      //     "passenger": {
-      //       "id": "616ffc18b143c65ac1126f4f",
-      //       "phone": "+94711737707",
-      //       "name": "rathnavibushana",
-      //       "rating": 0.0
-      //     },
-      //     "startLocation": {"x": 0.0, "y": 0.0},
-      //     "endLocation": {"x": 10.0, "y": 10.0},
-      //     "distance": 10,
-      //     "status": "PENDING",
-      //     "driver": null,
-      //     "organization": null,
-      //     "timestamp": 1634900225
-      //   },
-      //   "error": false,
-      // };
-      try {
-        FirebaseNotifications firebaseNotifications = FirebaseNotifications();
-        await firebaseNotifications.startListening();
-        await firebaseNotifications.subscribeTopic("addRideRequest");
-      } catch (e) {
-        Get.snackbar("Something is wrong!!!", "Please try again.");
-        return false;
-      }
       dynamic response = await request(
         startLocation: startLocation,
         endLocation: endLocation,
@@ -117,9 +113,34 @@ class RideController extends GetxController {
     }
   }
 
-  Future<bool> rideDetails() async {
+  Future<bool> rideCancel() async {
     try {
-      String id = "61738b977ccb6600387733dc";
+      //hardcoded id
+      String id = ride.value.rideRequest.id;
+      dynamic response = await cancel(
+        id: id,
+        token: Get.find<UserController>().passenger.value.token,
+      );
+
+      if (!response["error"]) {
+        clearRide();
+
+        debugPrint("ride : " + ride.value.toJson().toString());
+
+        debugPrint(
+            "ride - request : " + ride.value.rideRequest.toJson().toString());
+
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> rideDetails(String id) async {
+    try {
       dynamic response = await getRide(
         id: id,
         token: Get.find<UserController>().passenger.value.token,
@@ -142,13 +163,62 @@ class RideController extends GetxController {
     }
   }
 
+  Future<bool> changeRideState(String state) async {
+    try {
+      RideState rideState = getRideState(state);
+      if (rideState == RideState.ACCEPTED) {
+        ride.value.rideStatus = RideState.ACCEPTED;
+      } else if (rideState == RideState.ARRIVED) {
+        ride.update((val) {
+          val!.rideStatus = RideState.ARRIVED;
+        });
+      } else if (rideState == RideState.PICKED) {
+        ride.update((val) {
+          val!.rideStatus = RideState.PICKED;
+        });
+      } else if (rideState == RideState.DROPPED) {
+        ride.update((val) {
+          val!.rideStatus = RideState.DROPPED;
+        });
+      } else if (rideState == RideState.FINISHED) {
+        ride.update((val) {
+          val!.rideStatus = RideState.FINISHED;
+        });
+      } else if (rideState == RideState.PASSENGERRATEANDCOMMENT) {
+        ride.update((val) {
+          val!.rideStatus = RideState.PASSENGERRATEANDCOMMENT;
+        });
+      } else if (rideState == RideState.CONFIRMED) {
+        ride.update((val) {
+          val!.rideStatus = RideState.CONFIRMED;
+        });
+      } else if (rideState == RideState.NOTRIP) {
+        ride.update((val) {
+          val!.rideStatus = RideState.NOTRIP;
+        });
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> rideComplete() async {
+    try {
+      ride.value.rideStatus = RideState.PASSENGERRATEANDCOMMENT;
+      return true;
+    } catch (e) {
+      return true;
+    }
+  }
+
   Future<bool> rideConfirmed({
     required passengerFeedback,
     required driverRating,
   }) async {
     try {
       //hardcoded id
-      String id = "61738b977ccb6600387733dc";
+      String id = ride.value.id;
       dynamic response = await confirm(
         id: id,
         passengerFeedback: passengerFeedback,

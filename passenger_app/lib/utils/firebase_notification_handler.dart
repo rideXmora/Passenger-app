@@ -6,6 +6,7 @@ import 'package:passenger_app/controllers/user_controller.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:passenger_app/utils/ride_state_enum.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class FirebaseNotifications {
@@ -50,18 +51,34 @@ class FirebaseNotifications {
     await FirebaseMessaging.instance.getInitialMessage();
     debugPrint("start listning");
 // listen to foreground messages
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       debugPrint("new foreground message");
       if (message.notification != null) {
         debugPrint(message.notification!.title);
         debugPrint(message.notification!.body);
+        debugPrint(message.data.toString());
+        debugPrint("id: " + message.data['id']);
         String id = "";
-        if (message.notification!.body != null) {
-          id = message.notification!.body!;
-          //Get.find<RideController>().getRideRequest(id);
+        if (message.notification!.title == null) {
+          Get.snackbar("Something is wrong!!!", "Please try again.");
         } else {
-          debugPrint("error");
+          String state = message.notification!.title!;
+          debugPrint(getRideState(state).toString());
+          if (message.data['id'] != null) {
+            id = message.data['id'];
+
+            if (getRideState(state) == RideState.ACCEPTED) {
+              await Get.find<RideController>().rideDetails(id);
+            } else {
+              await Get.find<RideController>().changeRideState(state);
+            }
+          } else {
+            debugPrint("error");
+            Get.snackbar("Something is wrong!!!", "Please try again.");
+          }
         }
+      } else {
+        Get.snackbar("Something is wrong!!!", "Please try again.");
       }
     });
 
@@ -71,13 +88,28 @@ class FirebaseNotifications {
       if (message.notification != null) {
         debugPrint(message.notification!.title);
         debugPrint(message.notification!.body);
+        debugPrint(message.data.toString());
+        debugPrint("id: " + message.data['id']);
         String id = "";
-        if (message.notification!.body != null) {
-          id = message.notification!.body!;
-          //Get.find<RideController>().getRideRequest(id);
+        if (message.notification!.title == null) {
+          Get.snackbar("Something is wrong!!!", "Please try again.");
         } else {
-          debugPrint("error");
+          String state = message.notification!.title!;
+          debugPrint(getRideState(state).toString());
+          if (message.data['id'] != null) {
+            id = message.data['id'];
+            if (getRideState(state) == RideState.ACCEPTED) {
+              await Get.find<RideController>().rideDetails(id);
+            } else {
+              await Get.find<RideController>().changeRideState(state);
+            }
+          } else {
+            debugPrint("error");
+            Get.snackbar("Something is wrong!!!", "Please try again.");
+          }
         }
+      } else {
+        Get.snackbar("Something is wrong!!!", "Please try again.");
       }
     });
   }
