@@ -110,6 +110,8 @@ class UserController extends GetxController {
       dynamic response = await profileUpdate(
           name: name,
           email: email,
+          notificationToken:
+              Get.find<UserController>().passenger.value.notificationToken,
           token: Get.find<UserController>().passenger.value.token);
       debugPrint(response["enabled"].toString());
 
