@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:passenger_app/controllers/map_controller.dart';
 import 'package:passenger_app/controllers/ride_controller.dart';
 import 'package:passenger_app/modals/driver.dart';
 import 'package:passenger_app/modals/location.dart';
@@ -97,6 +98,10 @@ class _MapScreenState extends State<MapScreen> {
 
     newGoogleMapController
         .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+
+    String address =
+        await Get.find<MapController>().searchCoordinateAddress(position);
+    debugPrint("My address: " + address);
   }
 
   @override
