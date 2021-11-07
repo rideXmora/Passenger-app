@@ -13,6 +13,7 @@ class TripCompleted extends StatelessWidget {
     required this.trip,
     required this.pickUp,
     required this.dropOff,
+    required this.payment,
   }) : super(key: key);
 
   final onPressed;
@@ -21,6 +22,7 @@ class TripCompleted extends StatelessWidget {
   final DirectionDetails trip;
   final String pickUp;
   final String dropOff;
+  final double payment;
 
   @override
   Widget build(BuildContext context) {
@@ -204,7 +206,7 @@ class TripCompleted extends StatelessWidget {
                             ),
                             SimpleIconTextBox(
                               icon: Icons.attach_money_sharp,
-                              text: "250 LKR",
+                              text: "$payment LKR",
                             ),
                           ],
                         ),

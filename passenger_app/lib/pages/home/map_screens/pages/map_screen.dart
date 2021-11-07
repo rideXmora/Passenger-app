@@ -27,11 +27,11 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 // import 'package:sockjs_client_wrapper/sockjs_client_wrapper.dart';
 // import "package:stomp/stomp.dart";
 // import "package:stomp/vm.dart" show connect;
-// import 'dart:convert';
+import 'dart:convert';
 
-// import 'package:stomp_dart_client/stomp.dart';
-// import 'package:stomp_dart_client/stomp_config.dart';
-// import 'package:stomp_dart_client/stomp_frame.dart';
+import 'package:stomp_dart_client/stomp.dart';
+import 'package:stomp_dart_client/stomp_config.dart';
+import 'package:stomp_dart_client/stomp_frame.dart';
 
 import 'package:geolocator/geolocator.dart';
 
@@ -49,6 +49,7 @@ class _MapScreenState extends State<MapScreen> {
   bool loading = false;
   bool loadingGreen = false;
   bool loadingRed = false;
+  bool complain = false;
 
   TextEditingController paymentMethod = TextEditingController();
   int slectedMethod = 0;
@@ -58,11 +59,11 @@ class _MapScreenState extends State<MapScreen> {
       "method": "Cash Payment",
       "index": 0,
     },
-    {
-      "Icon": Icons.credit_card,
-      "method": "Card Payment",
-      "index": 1,
-    }
+    // {
+    //   "Icon": Icons.credit_card,
+    //   "method": "Card Payment",
+    //   "index": 1,
+    // }
   ];
 
   // RideState rideState = RideState.NOTRIP;
@@ -103,57 +104,50 @@ class _MapScreenState extends State<MapScreen> {
       paymentMethod.text = methods[0]["method"];
       slectedMethod = 0;
     });
-    // loadSocket();
+    // try {
+    //   stompClient = StompClient(
+    //       config: StompConfig.SockJS(
+    //     url: 'http://ridex.ml/ws',
+    //     onConnect: onConnect,
+    //     beforeConnect: () async {
+    //       print('waiting to connect...');
+    //       await Future.delayed(Duration(milliseconds: 200));
+    //       print('connecting...');
+    //     },
+    //     onWebSocketError: (dynamic error) => print(error.toString()),
+    //     // stompConnectHeaders: {'Authorization': 'Bearer yourToken'},
+    //     // webSocketConnectHeaders: {'Authorization': 'Bearer yourToken'},
+    //   ));
+    //   stompClient.activate();
+    // } catch (e) {
+    //   debugPrint(e.toString());
+    // }
   }
 
-  // void loadSocket() {
-  //   // final echoUri = Uri.parse('http://localhost:8080/ws');
-  //   // final options = SockJSOptions(
-  //   //     transports: ['websocket', 'xhr-streaming', 'xhr-polling']);
-  //   // final socket = SockJSClient(echoUri, options: options);
-
-  //   // connect("foo.server.com").then((StompClient client) {
-  //   //   client.subscribeString("/foo",
-  //   //       (Map<String, String> headers, String message) {
-  //   //     print("Recieve $message");
-  //   //   },socket);
-
-  //   //   client.sendString("/foo", "Hi, Stomp");
-  //   // });
-  //   stompClient = StompClient(
-  //     config: StompConfig(
-  //       url: 'http://localhost:8080/ws',
-  //       onConnect: onConnect,
-  //       beforeConnect: () async {
-  //         print('waiting to connect...');
-  //         await Future.delayed(Duration(milliseconds: 200));
-  //         print('connecting...');
-  //       },
-  //       onWebSocketError: (dynamic error) => print(error.toString()),
-  //       stompConnectHeaders: {'Authorization': 'Bearer yourToken'},
-  //       webSocketConnectHeaders: {'Authorization': 'Bearer yourToken'},
-  //     ),
-  //   );
-  // }
-
   // void onConnect(StompFrame frame) {
+  //   var sname = "+94763067706";
   //   stompClient.subscribe(
-  //     destination: '/ride/request',
+  //     destination: "/user/" + sname + "/queue/messages",
   //     callback: (frame) {
   //       List<dynamic>? result = json.decode(frame.body!);
   //       print(result);
   //     },
   //   );
 
-  //   Timer.periodic(Duration(seconds: 10), (_) {
-  //     stompClient.send(
-  //       destination: '/app/request',
-  //       body: json.encode({'a': 123}),
-  //     );
-  //   });
+  //   // Timer.periodic(Duration(seconds: 10), (_) {
+  //   //   const message = {
+  //   //     "senderPhone": "sname",
+  //   //     "receiverPhone": "rname",
+  //   //     "location": {"x": 1.2222, "y": 2.444},
+  //   //   };
+  //   //   stompClient.send(
+  //   //     destination: '/app/chat',
+  //   //     body: json.encode(message),
+  //   //   );
+  //   // });
   // }
 
-  // late final stompClient;
+  var stompClient;
 
   Widget _floatingCollapsed() {
     return Container(
@@ -473,7 +467,7 @@ class _MapScreenState extends State<MapScreen> {
                                           .value
                                           .rideRequest
                                           .driver,
-                                      time: "1 min",
+                                      time: "",
                                       rideState: Get.find<RideController>()
                                           .ride
                                           .value
@@ -502,7 +496,7 @@ class _MapScreenState extends State<MapScreen> {
                                               .value
                                               .rideRequest
                                               .driver,
-                                          time: "1 min",
+                                          time: "",
                                           rideState: Get.find<RideController>()
                                               .ride
                                               .value
@@ -551,6 +545,7 @@ class _MapScreenState extends State<MapScreen> {
                       trip: mapController.directionDetails.value,
                       pickUp: mapController.start.value.getLocationText(),
                       dropOff: mapController.to.value.getLocationText(),
+                      payment: Get.find<RideController>().ride.value.payment,
                     )
                   : Get.find<RideController>().ride.value.rideStatus ==
                           RideState.PASSENGERRATEANDCOMMENT
@@ -588,35 +583,85 @@ class _MapScreenState extends State<MapScreen> {
                             });
                           },
                           comment: comment,
-                        )
+                          complain: complain,
+                          onComplain: (value) {
+                            setState(() {
+                              complain = !complain;
+                            });
+                            debugPrint(complain.toString());
+                          })
                       : Container(),
             ),
             Align(
               alignment: Alignment.topCenter,
               child: Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: SecondaryButtonWithIcon(
-                      icon: Icons.online_prediction,
-                      iconColor: primaryColorWhite,
-                      onPressed: () async {
-                        setState(() {
-                          Get.find<RideController>().clearRide();
-                          Get.find<RideController>()
-                              .ride
-                              .value
-                              .rideRequest
-                              .status = RideRequestState.SELECTVECHICLE;
-                        });
-                        setState(() {});
-                      },
-                      text: "get ride",
-                      boxColor: primaryColorDark,
-                      shadowColor: primaryColorDark,
-                      width: width,
-                    ),
-                  ),
+                  // Padding(
+                  //   padding: const EdgeInsets.only(top: 10),
+                  //   child: SecondaryButtonWithIcon(
+                  //     icon: Icons.online_prediction,
+                  //     iconColor: primaryColorWhite,
+                  //     onPressed: () async {
+                  //       setState(() {
+                  //         Get.find<RideController>().clearRide();
+                  //         Get.find<RideController>()
+                  //             .ride
+                  //             .value
+                  //             .rideRequest
+                  //             .status = RideRequestState.SELECTVECHICLE;
+                  //       });
+                  //       setState(() {});
+                  //     },
+                  //     text: "get ride",
+                  //     boxColor: primaryColorDark,
+                  //     shadowColor: primaryColorDark,
+                  //     width: width,
+                  //   ),
+                  // ),
+                  // Padding(
+                  //   padding: const EdgeInsets.only(top: 10),
+                  //   child: SecondaryButtonWithIcon(
+                  //     icon: Icons.online_prediction,
+                  //     iconColor: primaryColorWhite,
+                  //     onPressed: () async {
+                  //       setState(() {
+                  //         Get.find<RideController>().clearRide();
+                  //         Get.find<RideController>()
+                  //             .ride
+                  //             .value
+                  //             .rideRequest
+                  //             .status = RideRequestState.SELECTVECHICLE;
+                  //       });
+                  //       setState(() {});
+                  //     },
+                  //     text: "subscribe",
+                  //     boxColor: primaryColorDark,
+                  //     shadowColor: primaryColorDark,
+                  //     width: width,
+                  //   ),
+                  // ),
+                  // Padding(
+                  //   padding: const EdgeInsets.only(top: 10),
+                  //   child: SecondaryButtonWithIcon(
+                  //     icon: Icons.online_prediction,
+                  //     iconColor: primaryColorWhite,
+                  //     onPressed: () {
+                  //       // const message = {
+                  //       //   "senderPhone": "sname",
+                  //       //   "receiverPhone": "rname",
+                  //       //   "location": {"x": 1.2222, "y": 2.444},
+                  //       // };
+                  //       // stompClient.send(
+                  //       //   destination: '/app/chat',
+                  //       //   body: json.encode(message),
+                  //       // );
+                  //     },
+                  //     text: "send message",
+                  //     boxColor: primaryColorDark,
+                  //     shadowColor: primaryColorDark,
+                  //     width: width,
+                  //   ),
+                  // ),
                 ],
               ),
             ),

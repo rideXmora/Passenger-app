@@ -163,10 +163,11 @@ class RideFloatingPanel extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                   )
-                : SimpleIconTextBox(
-                    icon: Icons.timer,
-                    text: "$time remaining",
-                  ),
+                : Container(),
+            // : SimpleIconTextBox(
+            //     icon: Icons.timer,
+            //     text: "$time remaining",
+            //   ),
             Spacer(
               flex: 3,
             ),

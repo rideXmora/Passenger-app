@@ -5,7 +5,7 @@ import 'package:passenger_app/theme/colors.dart';
 class VehicleBox extends StatelessWidget {
   final String title;
   final String subTitle;
-  final IconData icon;
+  final String icon;
   final int value;
   final int groupValue;
   final onChanged;
@@ -38,13 +38,14 @@ class VehicleBox extends StatelessWidget {
                   height: 45,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
-                    color: primaryColorBlack,
+                    color: primaryColor,
                   ),
                   alignment: Alignment.center,
-                  child: Icon(
-                    icon,
-                    color: primaryColor,
-                    size: 35,
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Image(image: AssetImage(icon)),
+                    ),
                   ),
                 ),
                 Expanded(
@@ -59,19 +60,19 @@ class VehicleBox extends StatelessWidget {
                           Text(
                             title,
                             style: TextStyle(
-                              color: primaryColorBlack,
-                              fontSize: 14,
+                              color: primaryColorDark,
+                              fontSize: 25,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
-                          Text(
-                            subTitle,
-                            style: TextStyle(
-                              color: primaryColorBlack,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
+                          // Text(
+                          //   subTitle,
+                          //   style: TextStyle(
+                          //     color: primaryColorBlack,
+                          //     fontSize: 12,
+                          //     fontWeight: FontWeight.w500,
+                          //   ),
+                          // ),
                         ],
                       ),
                     ),

@@ -5,11 +5,13 @@ import 'package:get/get.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:passenger_app/controllers/controller.dart';
 import 'package:passenger_app/controllers/map_controller.dart';
+import 'package:passenger_app/controllers/ride_controller.dart';
 import 'package:passenger_app/controllers/user_controller.dart';
 import 'package:passenger_app/pages/home/map_screens/pages/map_screen.dart';
 import 'package:passenger_app/pages/home/home_screens/pages/home_screen.dart';
 import 'package:passenger_app/pages/home/home_screens/pages/search_location_screen.dart';
 import 'package:passenger_app/theme/colors.dart';
+import 'package:passenger_app/utils/ride_request_state_enum.dart';
 import 'package:passenger_app/widgets/circular_loading.dart';
 import 'package:passenger_app/widgets/dialog_box.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -157,6 +159,14 @@ class _HomeScreensState extends State<HomeScreens> {
                                   .toString());
                           debugPrint("start: " +
                               result3["directionDetails"].toJson().toString());
+                          setState(() {
+                            Get.find<RideController>().clearRide();
+                            Get.find<RideController>()
+                                .ride
+                                .value
+                                .rideRequest
+                                .status = RideRequestState.SELECTVECHICLE;
+                          });
                           setState(() {
                             mapLoading = false;
                             map = true;

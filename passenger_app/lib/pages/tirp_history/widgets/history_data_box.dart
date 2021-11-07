@@ -72,7 +72,7 @@ class HistoryDataBox extends StatelessWidget {
                             ),
                             Container(
                               width: 2,
-                              height: 20,
+                              height: 24,
                               color: primaryColorLight,
                             ),
                             Container(
@@ -98,7 +98,7 @@ class HistoryDataBox extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Container(
-                                  height: 30,
+                                  height: 34,
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -126,7 +126,7 @@ class HistoryDataBox extends StatelessWidget {
                                   height: 10,
                                 ),
                                 Container(
-                                  height: 30,
+                                  height: 34,
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -170,11 +170,11 @@ class HistoryDataBox extends StatelessWidget {
                         children: [
                           SimpleIconTextBox(
                             icon: Icons.location_on_sharp,
-                            text: "0.1 miles",
+                            text: "15 Km",
                           ),
                           SimpleIconTextBox(
                             icon: Icons.timer,
-                            text: "1 min",
+                            text: "30 min",
                           ),
                           SimpleIconTextBox(
                             icon: Icons.attach_money_sharp,
