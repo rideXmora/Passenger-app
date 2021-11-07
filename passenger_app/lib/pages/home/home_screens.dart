@@ -4,10 +4,13 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:passenger_app/controllers/controller.dart';
+import 'package:passenger_app/controllers/map_controller.dart';
 import 'package:passenger_app/controllers/user_controller.dart';
 import 'package:passenger_app/pages/home/map_screens/pages/map_screen.dart';
 import 'package:passenger_app/pages/home/home_screens/pages/home_screen.dart';
 import 'package:passenger_app/pages/home/home_screens/pages/search_location_screen.dart';
+import 'package:passenger_app/theme/colors.dart';
+import 'package:passenger_app/widgets/circular_loading.dart';
 import 'package:passenger_app/widgets/dialog_box.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -23,6 +26,7 @@ bool search = false;
 bool map = false;
 bool dialogBox = false;
 bool loading = false;
+bool mapLoading = false;
 
 class _HomeScreensState extends State<HomeScreens> {
   @override
@@ -95,22 +99,80 @@ class _HomeScreensState extends State<HomeScreens> {
             ],
           ),
           search
-              ? SearchLocationScreen(
-                  onBack: () {
-                    setState(() {
-                      search = false;
-                    });
-                  },
-                  toMap: () {
-                    setState(() {
-                      map = true;
-                    });
-                  },
-                )
+              ? mapLoading
+                  ? Scaffold(
+                      backgroundColor: primaryColorWhite,
+                      body: Center(
+                        child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                mapLoading = false;
+                              });
+                            },
+                            child: CircularLoading()),
+                      ),
+                    )
+                  : SearchLocationScreen(
+                      onBack: () {
+                        mapController.clearData();
+                        setState(() {
+                          search = false;
+                        });
+                      },
+                      toMap: () async {
+                        setState(() {
+                          mapLoading = true;
+                        });
+                        bool result1 = await Get.find<MapController>()
+                            .getStartPlaceDetails(
+                                Get.find<MapController>().start.value.placeId);
+                        bool result2 = false;
+                        if (result1) {
+                          result2 = await Get.find<MapController>()
+                              .getEndPlaceDetails(
+                                  Get.find<MapController>().to.value.placeId);
+                        }
+                        Map<String, dynamic> result3 = {"state": false};
+                        if (result1 && result2) {
+                          result3 = await Get.find<MapController>()
+                              .getDirectionDetails(
+                            Get.find<MapController>().start.value.location,
+                            Get.find<MapController>().to.value.location,
+                          );
+                        }
+                        if (result1 && result2 && result3["state"]) {
+                          debugPrint("start: " +
+                              Get.find<MapController>()
+                                  .start
+                                  .value
+                                  .location
+                                  .toJson()
+                                  .toString());
+                          debugPrint("end: " +
+                              Get.find<MapController>()
+                                  .to
+                                  .value
+                                  .location
+                                  .toJson()
+                                  .toString());
+                          debugPrint("start: " +
+                              result3["directionDetails"].toJson().toString());
+                          setState(() {
+                            mapLoading = false;
+                            map = true;
+                          });
+                        } else {
+                          setState(() {
+                            mapLoading = false;
+                          });
+                        }
+                      },
+                    )
               : Container(),
           map
               ? MapScreen(onBack: () {
                   debugPrint("s");
+                  mapController.clearData();
                   setState(() {
                     map = false;
                   });

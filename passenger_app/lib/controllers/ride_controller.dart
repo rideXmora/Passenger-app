@@ -81,6 +81,8 @@ class RideController extends GetxController {
     required double distance,
   }) async {
     try {
+      debugPrint(startLocation.toJson().toString());
+      debugPrint(endLocation.toJson().toString());
       dynamic response = await request(
         startLocation: startLocation,
         endLocation: endLocation,

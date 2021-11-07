@@ -10,6 +10,7 @@ import 'package:passenger_app/controllers/map_controller.dart';
 import 'package:passenger_app/controllers/ride_controller.dart';
 import 'package:passenger_app/modals/driver.dart';
 import 'package:passenger_app/modals/location.dart';
+import 'package:passenger_app/pages/home/home_screens.dart';
 import 'package:passenger_app/pages/home/map_screens/widgets/floating_panel/finding_ride_floating_panel.dart';
 import 'package:passenger_app/pages/home/map_screens/widgets/floating_panel/ride_floating_panel.dart';
 import 'package:passenger_app/pages/home/map_screens/widgets/floating_panel/select_vechicle_type_floating_panel.dart';
@@ -19,8 +20,10 @@ import 'package:passenger_app/utils/firebase_notification_handler.dart';
 import 'package:passenger_app/utils/ride_request_state_enum.dart';
 import 'package:passenger_app/utils/ride_state_enum.dart';
 import 'package:passenger_app/theme/colors.dart';
+import 'package:passenger_app/widgets/circular_loading.dart';
 import 'package:passenger_app/widgets/secondary_button_with_icon.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 // import 'package:sockjs_client_wrapper/sockjs_client_wrapper.dart';
 // import "package:stomp/stomp.dart";
 // import "package:stomp/vm.dart" show connect;
@@ -62,47 +65,36 @@ class _MapScreenState extends State<MapScreen> {
     }
   ];
 
-  Driver driver = Driver(
-    image: "a",
-    name: "Avishka Rathnavibushana",
-    number: "+94711737706",
-    vechicleType: "Toyota Corolla",
-  );
-
   // RideState rideState = RideState.NOTRIP;
   // RideRequestState rideRequest = RideRequestState.NOTRIP;
 
   int rating = 1;
   TextEditingController comment = TextEditingController();
 
+  MapController mapController = Get.find<MapController>();
   final CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(37.42796133580664, -122.085749655962),
     zoom: 14.4746,
   );
 
-  Completer<GoogleMapController> _controllerGoogleMap = Completer();
+  // late Position currentPosition;
+  // Future<void> locatePosition() async {
+  //   Position position = await Geolocator.getCurrentPosition(
+  //       desiredAccuracy: LocationAccuracy.high);
+  //   currentPosition = position;
 
-  late GoogleMapController newGoogleMapController;
+  //   LatLng latLastPosition = LatLng(position.latitude, position.longitude);
 
-  late Position currentPosition;
+  //   CameraPosition cameraPosition =
+  //       CameraPosition(target: latLastPosition, zoom: 14);
 
-  Future<void> locatePosition() async {
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-    currentPosition = position;
+  //   newGoogleMapController
+  //       .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
 
-    LatLng latLastPosition = LatLng(position.latitude, position.longitude);
-
-    CameraPosition cameraPosition =
-        CameraPosition(target: latLastPosition, zoom: 14);
-
-    newGoogleMapController
-        .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
-
-    String address =
-        await Get.find<MapController>().searchCoordinateAddress(position);
-    debugPrint("My address: " + address);
-  }
+  //   String address =
+  //       await Get.find<MapController>().searchCoordinateAddress(position);
+  //   debugPrint("My address: " + address);
+  // }
 
   @override
   void initState() {
@@ -260,15 +252,9 @@ class _MapScreenState extends State<MapScreen> {
         loadingGreen = true;
       });
       bool result = await Get.find<RideController>().rideRequestSending(
-        startLocation: Location(
-          x: 0,
-          y: 0,
-        ),
-        endLocation: Location(
-          x: 10,
-          y: 10,
-        ),
-        distance: 10,
+        startLocation: mapController.start.value.location,
+        endLocation: mapController.to.value.location,
+        distance: mapController.directionDetails.value.distanceValue.toDouble(),
       );
       setState(() {
         loadingGreen = false;
@@ -292,6 +278,8 @@ class _MapScreenState extends State<MapScreen> {
       setState(() {
         loadingGreen = false;
       });
+
+      widget.onBack();
     }
   }
 
@@ -347,6 +335,7 @@ class _MapScreenState extends State<MapScreen> {
         comment.text = "";
         rating = 1;
       });
+      widget.onBack();
     }
   }
 
@@ -363,6 +352,7 @@ class _MapScreenState extends State<MapScreen> {
       setState(() {
         loadingRed = false;
       });
+      widget.onBack();
     }
   }
 
@@ -397,19 +387,27 @@ class _MapScreenState extends State<MapScreen> {
             Column(
               children: [
                 Expanded(
-                  child: GoogleMap(
-                    mapType: MapType.normal,
-                    initialCameraPosition: _kGooglePlex,
-                    myLocationButtonEnabled: true,
-                    myLocationEnabled: true,
-                    zoomGesturesEnabled: true,
-                    zoomControlsEnabled: true,
-                    onMapCreated: (GoogleMapController controller) {
-                      _controllerGoogleMap.complete(controller);
-                      newGoogleMapController = controller;
+                  child: Obx(
+                    () => GoogleMap(
+                      mapType: MapType.normal,
+                      initialCameraPosition: _kGooglePlex,
+                      myLocationButtonEnabled: true,
+                      myLocationEnabled: true,
+                      zoomGesturesEnabled: true,
+                      zoomControlsEnabled: true,
+                      onMapCreated: (GoogleMapController controller) {
+                        Completer<GoogleMapController> _controllerGoogleMap =
+                            Completer();
+                        _controllerGoogleMap.complete(controller);
+                        mapController.newGoogleMapController = controller;
 
-                      locatePosition();
-                    },
+                        //locatePosition();
+                        mapController.setPolyLines();
+                      },
+                      polylines: mapController.polyLineSet.value,
+                      markers: mapController.markersSet.value,
+                      circles: mapController.circlesSet.value,
+                    ),
                   ),
                 ),
               ],
@@ -550,6 +548,9 @@ class _MapScreenState extends State<MapScreen> {
                   ? TripCompleted(
                       loading: loading,
                       onPressed: tripCompletedOnPressed,
+                      trip: mapController.directionDetails.value,
+                      pickUp: mapController.start.value.getLocationText(),
+                      dropOff: mapController.to.value.getLocationText(),
                     )
                   : Get.find<RideController>().ride.value.rideStatus ==
                           RideState.PASSENGERRATEANDCOMMENT
@@ -618,6 +619,14 @@ class _MapScreenState extends State<MapScreen> {
                   ),
                 ],
               ),
+            ),
+            Obx(
+              () => mapController.polyLineLoading.value
+                  ? Container(
+                      color: primaryColorBlack.withOpacity(0.5),
+                      child: Center(child: CircularLoading()),
+                    )
+                  : Container(),
             ),
           ],
         ),
