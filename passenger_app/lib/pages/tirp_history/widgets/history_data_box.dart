@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:passenger_app/modals/past_trip.dart';
 import 'package:passenger_app/theme/colors.dart';
+import 'package:passenger_app/utils/payment_method.dart';
 import 'package:passenger_app/widgets/simple_icon_text_box.dart';
 
 class HistoryDataBox extends StatelessWidget {
   const HistoryDataBox({
     Key? key,
+    required this.pastTrip,
   }) : super(key: key);
+
+  final PastTrip pastTrip;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +44,7 @@ class HistoryDataBox extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "2021 july 12",
+                    pastTrip.date,
                     style: TextStyle(
                       color: primaryColorBlack,
                       fontSize: 18,
@@ -72,7 +77,7 @@ class HistoryDataBox extends StatelessWidget {
                             ),
                             Container(
                               width: 2,
-                              height: 24,
+                              height: 20,
                               color: primaryColorLight,
                             ),
                             Container(
@@ -112,7 +117,7 @@ class HistoryDataBox extends StatelessWidget {
                                         ),
                                       ),
                                       Text(
-                                        "Moratuwa, Sri Lanka",
+                                        pastTrip.startLocationText,
                                         style: TextStyle(
                                           color: primaryColorWhite,
                                           fontSize: 14,
@@ -140,7 +145,7 @@ class HistoryDataBox extends StatelessWidget {
                                         ),
                                       ),
                                       Text(
-                                        "Panadura, Sri Lanka",
+                                        pastTrip.endLocationText,
                                         style: TextStyle(
                                           color: primaryColorWhite,
                                           fontSize: 14,
@@ -170,15 +175,18 @@ class HistoryDataBox extends StatelessWidget {
                         children: [
                           SimpleIconTextBox(
                             icon: Icons.location_on_sharp,
-                            text: "15 Km",
+                            text:
+                                "${(pastTrip.distance / 1000).toStringAsFixed(2)} Km",
                           ),
-                          SimpleIconTextBox(
-                            icon: Icons.timer,
-                            text: "30 min",
-                          ),
+                          // SimpleIconTextBox(
+                          //   icon: Icons.timer,
+                          //   iconColor: primaryColorLight,
+                          //   text: "1 min",
+                          //   textColor: primaryColorWhite,
+                          // ),
                           SimpleIconTextBox(
                             icon: Icons.attach_money_sharp,
-                            text: "250 LKR",
+                            text: "${pastTrip.payment.toStringAsFixed(2)} LKR",
                           ),
                         ],
                       ),
@@ -192,7 +200,9 @@ class HistoryDataBox extends StatelessWidget {
                         width: 5,
                       ),
                       Text(
-                        "Card Payment",
+                        pastTrip.paymentMethod == PaymentMethod.CASH
+                            ? 'Cash' + " Payment"
+                            : 'Card' + " Payment",
                         style: TextStyle(
                           color: primaryColorWhite,
                           fontSize: 14,

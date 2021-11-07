@@ -24,9 +24,9 @@ class _VehicleSelectionRadioButtonState
             });
           },
           child: VehicleBox(
-            icon: Icons.home_rounded,
-            title: "Home",
-            subTitle: "Anandarama Rd, Moratuwa.",
+            icon: "assets/images/images/car.png",
+            title: "Car",
+            subTitle: "",
             value: 1,
             groupValue: selected,
             onChanged: (value) {
@@ -43,9 +43,9 @@ class _VehicleSelectionRadioButtonState
             });
           },
           child: VehicleBox(
-            icon: Icons.home_rounded,
-            title: "Home",
-            subTitle: "Anandarama Rd, Moratuwa.",
+            icon: "assets/images/images/tuk.png",
+            title: "Tuk",
+            subTitle: "",
             value: 2,
             groupValue: selected,
             onChanged: (value) {
@@ -62,9 +62,9 @@ class _VehicleSelectionRadioButtonState
             });
           },
           child: VehicleBox(
-            icon: Icons.home_rounded,
-            title: "Home",
-            subTitle: "Anandarama Rd, Moratuwa.",
+            icon: "assets/images/images/bike.png",
+            title: "Moto",
+            subTitle: "",
             value: 3,
             groupValue: selected,
             onChanged: (value) {

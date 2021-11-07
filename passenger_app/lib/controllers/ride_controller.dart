@@ -1,4 +1,8 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:passenger_app/api/passenger_ride_api.dart';
 import 'package:passenger_app/controllers/user_controller.dart';
@@ -12,8 +16,12 @@ import 'package:passenger_app/modals/ride_request_vehicle.dart';
 import 'package:passenger_app/utils/firebase_notification_handler.dart';
 import 'package:passenger_app/utils/ride_request_state_enum.dart';
 import 'package:passenger_app/utils/ride_state_enum.dart';
+import 'package:stomp_dart_client/stomp.dart';
+import 'package:stomp_dart_client/stomp_config.dart';
+import 'package:stomp_dart_client/stomp_frame.dart';
 
 class RideController extends GetxController {
+  var stompClient;
   var ride = Ride(
     rideRequest: RideRequestRes(
       passenger: RideRequestPassenger(),
@@ -141,6 +149,30 @@ class RideController extends GetxController {
     }
   }
 
+  void onConnect(StompFrame frame) {
+    var sname = Get.find<RideController>().ride.value.rideRequest.driver.phone;
+    debugPrint(sname);
+    stompClient.subscribe(
+      destination: "/user/" + sname + "/queue/messages",
+      callback: (frame) {
+        var result = json.decode(frame.body!);
+        print("passenger: " + result);
+      },
+    );
+
+    // Timer.periodic(Duration(seconds: 10), (_) {
+    //   const message = {
+    //     "senderPhone": "sname",
+    //     "receiverPhone": "rname",
+    //     "location": {"x": 1.2222, "y": 2.444},
+    //   };
+    //   stompClient.send(
+    //     destination: '/app/chat',
+    //     body: json.encode(message),
+    //   );
+    // });
+  }
+
   Future<bool> rideDetails(String id) async {
     try {
       dynamic response = await getRide(
@@ -156,6 +188,54 @@ class RideController extends GetxController {
 
         debugPrint(
             "ride - request : " + ride.value.rideRequest.toJson().toString());
+        try {
+          stompClient = StompClient(
+              config: StompConfig.SockJS(
+            url: 'http://ridex.ml/ws',
+            onConnect: onConnect,
+            beforeConnect: () async {
+              print('waiting to connect...');
+              await Future.delayed(Duration(milliseconds: 200));
+              print('connecting...');
+            },
+            onWebSocketError: (dynamic error) => print(error.toString()),
+            // stompConnectHeaders: {'Authorization': 'Bearer yourToken'},
+            // webSocketConnectHeaders: {'Authorization': 'Bearer yourToken'},
+          ));
+          stompClient.activate();
+
+          // Timer.periodic(Duration(seconds: 2), (Timer timer) async {
+          //   debugPrint("safa");
+          //   Position position = await Geolocator.getCurrentPosition(
+          //       desiredAccuracy: LocationAccuracy.high);
+
+          //   var message = {
+          //     "senderPhone": Get.find<UserController>().driver.value.phone,
+          //     "receiverPhone": Get.find<RideController>()
+          //         .ride
+          //         .value
+          //         .rideRequest
+          //         .passenger
+          //         .phone,
+          //     "location": {"x": position.latitude, "y": position.longitude},
+          //   };
+          //   stompClient.send(
+          //     destination: '/app/chat',
+          //     body: json.encode(message),
+          //   );
+          //   if (Get.find<RideController>().ride.value.rideStatus ==
+          //           RideState.DROPPED ||
+          //       Get.find<RideController>().ride.value.rideStatus ==
+          //           RideState.FINISHED ||
+          //       Get.find<RideController>().ride.value.rideStatus ==
+          //           RideState.NOTRIP) {
+          //     timer.cancel();
+          //   }
+          // });
+        } catch (e) {
+          debugPrint(e.toString());
+        }
+        stompClient.activate();
         return true;
       } else {
         return false;

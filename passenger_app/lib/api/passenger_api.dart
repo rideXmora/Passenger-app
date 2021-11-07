@@ -27,3 +27,12 @@ Future<dynamic> profileUpdate({
   );
   return response;
 }
+
+Future<dynamic> past({required String token}) async {
+  String url = '/api/passenger/ride/past';
+  dynamic response = await getRequest(
+    url: url,
+    token: token,
+  );
+  return response;
+}

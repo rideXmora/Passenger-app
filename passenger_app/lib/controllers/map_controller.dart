@@ -131,6 +131,21 @@ class MapController extends GetxController {
     return placeDetails;
   }
 
+  Future<String> searchAddress(Location location) async {
+    String url =
+        "/maps/api/geocode/json?latlng=${location.x},${location.y}&key=$Google_MAP_API_KEY";
+
+    var response = await externalAPIGetRequest(url: url);
+    var address = "";
+
+    if (response != "error") {
+      address = response["results"][0]["address_components"][1]["long_name"] +
+          ", " +
+          response["results"][0]["address_components"][2]["long_name"];
+    }
+    return address;
+  }
+
   Future<void> findPlace(String placeName) async {
     if (placeName.length > 0) {
       String url =
