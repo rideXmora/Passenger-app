@@ -35,6 +35,7 @@ import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
 
 import 'package:geolocator/geolocator.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MapScreen extends StatefulWidget {
   MapScreen({
@@ -266,7 +267,11 @@ class _MapScreenState extends State<MapScreen> {
       setState(() {
         loadingGreen = true;
       });
-      // real action is to call driver
+      String phone =
+          Get.find<RideController>().ride.value.rideRequest.driver.phone;
+      await canLaunch("tel:$phone")
+          ? await launch("tel:$phone")
+          : Get.snackbar("Somethimg is wrong!", "Please try again later.");
       setState(() {
         loadingGreen = false;
       });
@@ -278,7 +283,11 @@ class _MapScreenState extends State<MapScreen> {
       setState(() {
         loadingGreen = true;
       });
-      // real action is to call driver
+      String phone =
+          Get.find<RideController>().ride.value.rideRequest.driver.phone;
+      await canLaunch("tel:$phone")
+          ? await launch("tel:$phone")
+          : Get.snackbar("Somethimg is wrong!", "Please try again later.");
       setState(() {
         loadingGreen = false;
       });
