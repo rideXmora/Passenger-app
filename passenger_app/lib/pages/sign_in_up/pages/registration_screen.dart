@@ -158,25 +158,25 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               ),
                             ),
                           ),
-                          Align(
-                            alignment: Alignment.bottomRight,
-                            child: Container(
-                              width: 35,
-                              height: 35,
-                              decoration: BoxDecoration(
-                                color: primaryColor,
-                                borderRadius: BorderRadius.circular(200),
-                              ),
-                              child: IconButton(
-                                icon: Icon(Icons.camera_alt),
-                                color: Colors.white,
-                                iconSize: 18,
-                                onPressed: () {
-                                  _pickImageFromToProfile(context);
-                                },
-                              ),
-                            ),
-                          ),
+                          // Align(
+                          //   alignment: Alignment.bottomRight,
+                          //   child: Container(
+                          //     width: 35,
+                          //     height: 35,
+                          //     decoration: BoxDecoration(
+                          //       color: primaryColor,
+                          //       borderRadius: BorderRadius.circular(200),
+                          //     ),
+                          //     child: IconButton(
+                          //       icon: Icon(Icons.camera_alt),
+                          //       color: Colors.white,
+                          //       iconSize: 18,
+                          //       onPressed: () {
+                          //         _pickImageFromToProfile(context);
+                          //       },
+                          //     ),
+                          //   ),
+                          // ),
                         ],
                       ),
                     ),
