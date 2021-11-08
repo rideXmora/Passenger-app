@@ -34,6 +34,7 @@ class _VehicleSelectionRadioButtonState
             value: 1,
             groupValue: selected,
             onChanged: (value) {
+              Get.find<RideController>().vehicleType.value = VehicleType.CAR;
               setState(() {
                 selected = 1;
               });
@@ -42,6 +43,8 @@ class _VehicleSelectionRadioButtonState
         ),
         GestureDetector(
           onTap: () {
+            Get.find<RideController>().vehicleType.value =
+                VehicleType.THREE_WHEELER;
             setState(() {
               selected = 2;
             });
@@ -64,6 +67,7 @@ class _VehicleSelectionRadioButtonState
         GestureDetector(
           onTap: () {
             setState(() {
+              Get.find<RideController>().vehicleType.value = VehicleType.BIKE;
               selected = 3;
             });
           },
