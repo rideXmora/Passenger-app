@@ -221,13 +221,13 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
                               })
                           : Column(
                               children: [
-                                PreviousLocation(
-                                  icon: Icons.home_rounded,
-                                  divider: true,
-                                  title: "Home",
-                                  subTitle: "Anandarama Rd, Moratuwa.",
-                                  onTap: () {},
-                                ),
+                                // PreviousLocation(
+                                //   icon: Icons.home_rounded,
+                                //   divider: true,
+                                //   title: "Home",
+                                //   subTitle: "Anandarama Rd, Moratuwa.",
+                                //   onTap: () {},
+                                // ),
                                 // PreviousLocation(
                                 //   icon: Icons.history,
                                 //   divider: true,

@@ -92,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 children: [
                   SizedBox(
-                    height: 18,
+                    height: 70,
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -141,13 +141,13 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             child: Column(
                               children: [
-                                PreviousLocation(
-                                  icon: Icons.home_rounded,
-                                  divider: true,
-                                  title: "Home",
-                                  subTitle: "Anandarama Rd, Moratuwa.",
-                                  onTap: () {},
-                                ),
+                                // PreviousLocation(
+                                //   icon: Icons.home_rounded,
+                                //   divider: true,
+                                //   title: "Home",
+                                //   subTitle: "Anandarama Rd, Moratuwa.",
+                                //   onTap: () {},
+                                // ),
                                 // PreviousLocation(
                                 //   icon: Icons.history,
                                 //   divider: true,
