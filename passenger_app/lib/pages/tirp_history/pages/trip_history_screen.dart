@@ -66,34 +66,45 @@ class _TripHistoryScreenState extends State<TripHistoryScreen> {
                 leading: Container(),
               ),
               body: SafeArea(
-                child: SingleChildScrollView(
-                  child: Container(
-                    height: MediaQuery.of(context).size.height * 0.8,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 30,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 16),
-                        child: Obx(
-                          () => ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: Get.find<UserController>()
-                                .pastTrips
-                                .value
-                                .length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return HistoryDataBox(
-                                pastTrip:
-                                    Get.find<UserController>().pastTrips[index],
-                              );
-                            },
+                child: Get.find<UserController>().pastTrips.value.length == 0
+                    ? Center(
+                        child: Text(
+                          "No history detail yet...",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      )
+                    : SingleChildScrollView(
+                        child: Container(
+                          height: MediaQuery.of(context).size.height * 0.8,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 30,
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 16),
+                              child: Obx(
+                                () => ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: Get.find<UserController>()
+                                      .pastTrips
+                                      .value
+                                      .length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return HistoryDataBox(
+                                      pastTrip: Get.find<UserController>()
+                                          .pastTrips[index],
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ),
-                ),
               ),
             ),
     );
