@@ -16,11 +16,13 @@ import 'package:passenger_app/modals/ride_request_vehicle.dart';
 import 'package:passenger_app/utils/firebase_notification_handler.dart';
 import 'package:passenger_app/utils/ride_request_state_enum.dart';
 import 'package:passenger_app/utils/ride_state_enum.dart';
+import 'package:passenger_app/utils/vehicle_type.dart';
 import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
 
 class RideController extends GetxController {
+  Rx<VehicleType> vehicleType = VehicleType.CAR.obs;
   var stompClient;
   var ride = Ride(
     rideRequest: RideRequestRes(
@@ -87,15 +89,18 @@ class RideController extends GetxController {
     required Location startLocation,
     required Location endLocation,
     required double distance,
+    required VehicleType vehicleType,
   }) async {
     try {
       debugPrint(startLocation.toJson().toString());
       debugPrint(endLocation.toJson().toString());
+      debugPrint(getDriverVehicleTypeString(vehicleType));
       dynamic response = await request(
         startLocation: startLocation,
         endLocation: endLocation,
         distance: distance,
         token: Get.find<UserController>().passenger.value.token,
+        vehicleType: getDriverVehicleTypeString(vehicleType),
       );
 
       if (!response["error"]) {

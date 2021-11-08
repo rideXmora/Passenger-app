@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:passenger_app/controllers/ride_controller.dart';
 import 'package:passenger_app/pages/home/map_screens/widgets/vechicle_box.dart';
+import 'package:passenger_app/utils/vehicle_type.dart';
 
 class VehicleSelectionRadioButton extends StatefulWidget {
   VehicleSelectionRadioButton({Key? key}) : super(key: key);
@@ -19,6 +22,7 @@ class _VehicleSelectionRadioButtonState
       children: [
         GestureDetector(
           onTap: () {
+            Get.find<RideController>().vehicleType.value = VehicleType.CAR;
             setState(() {
               selected = 1;
             });
@@ -49,6 +53,8 @@ class _VehicleSelectionRadioButtonState
             value: 2,
             groupValue: selected,
             onChanged: (value) {
+              Get.find<RideController>().vehicleType.value =
+                  VehicleType.THREE_WHEELER;
               setState(() {
                 selected = 2;
               });
@@ -68,6 +74,7 @@ class _VehicleSelectionRadioButtonState
             value: 3,
             groupValue: selected,
             onChanged: (value) {
+              Get.find<RideController>().vehicleType.value = VehicleType.BIKE;
               setState(() {
                 selected = 3;
               });

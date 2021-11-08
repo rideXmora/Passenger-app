@@ -5,6 +5,7 @@ Future<dynamic> request(
     {required Location startLocation,
     required Location endLocation,
     required double distance,
+    required String vehicleType,
     required String token}) async {
   String url = '/api/passenger/ride/request';
   dynamic response = await postRequest(
@@ -13,6 +14,7 @@ Future<dynamic> request(
       "startLocation": startLocation.toJson(),
       "endLocation": endLocation.toJson(),
       "distance": distance,
+      "vehicleType": vehicleType,
     },
     token: token,
   );
