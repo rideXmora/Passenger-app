@@ -229,6 +229,7 @@ class _MapScreenState extends State<MapScreen> {
       setState(() {
         loadingGreen = true;
       });
+      debugPrint(Get.find<RideController>().vehicleType.value.toString());
       bool result = await Get.find<RideController>().rideRequestSending(
         startLocation: mapController.start.value.location,
         endLocation: mapController.to.value.location,
@@ -315,7 +316,7 @@ class _MapScreenState extends State<MapScreen> {
       bool result = await Get.find<RideController>().rideConfirmed(
         passengerFeedback: comment.text,
         driverRating: rating,
-        complain: complain,
+        complainBool: complain,
       );
 
       setState(() {
@@ -335,7 +336,7 @@ class _MapScreenState extends State<MapScreen> {
       bool result = await Get.find<RideController>().rideConfirmed(
         passengerFeedback: "",
         driverRating: 0,
-        complain: false,
+        complainBool: false,
       );
 
       setState(() {
