@@ -90,6 +90,10 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                 debugPrint("selected: " + selected.toString());
                 switch (selected) {
                   case 1:
+                    store.setString(
+                      "lan",
+                      'en_UK',
+                    );
                     break;
                   case 2:
                     store.setString(
@@ -113,6 +117,13 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                 String? lan = store.getString(
                   "lan",
                 );
+                debugPrint(lan.toString());
+                if (lan == null) {
+                  store.setString(
+                    "lan",
+                    'en_UK',
+                  );
+                }
                 debugPrint(lan.toString());
                 Get.to(GettingStartedScreen());
               },
