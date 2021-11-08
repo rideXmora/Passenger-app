@@ -1,4 +1,8 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:passenger_app/api/passenger_ride_api.dart';
 import 'package:passenger_app/controllers/user_controller.dart';
@@ -12,8 +16,14 @@ import 'package:passenger_app/modals/ride_request_vehicle.dart';
 import 'package:passenger_app/utils/firebase_notification_handler.dart';
 import 'package:passenger_app/utils/ride_request_state_enum.dart';
 import 'package:passenger_app/utils/ride_state_enum.dart';
+import 'package:passenger_app/utils/vehicle_type.dart';
+import 'package:stomp_dart_client/stomp.dart';
+import 'package:stomp_dart_client/stomp_config.dart';
+import 'package:stomp_dart_client/stomp_frame.dart';
 
 class RideController extends GetxController {
+  Rx<VehicleType> vehicleType = VehicleType.CAR.obs;
+  var stompClient;
   var ride = Ride(
     rideRequest: RideRequestRes(
       passenger: RideRequestPassenger(),
@@ -79,13 +89,18 @@ class RideController extends GetxController {
     required Location startLocation,
     required Location endLocation,
     required double distance,
+    required VehicleType vehicleType,
   }) async {
     try {
+      debugPrint(startLocation.toJson().toString());
+      debugPrint(endLocation.toJson().toString());
+      debugPrint(getDriverVehicleTypeString(vehicleType));
       dynamic response = await request(
         startLocation: startLocation,
         endLocation: endLocation,
         distance: distance,
         token: Get.find<UserController>().passenger.value.token,
+        vehicleType: getDriverVehicleTypeString(vehicleType),
       );
 
       if (!response["error"]) {
@@ -139,6 +154,30 @@ class RideController extends GetxController {
     }
   }
 
+  // void onConnect(StompFrame frame) {
+  //   var sname = Get.find<RideController>().ride.value.rideRequest.driver.phone;
+  //   debugPrint(sname);
+  //   stompClient.subscribe(
+  //     destination: "/user/" + sname + "/queue/messages",
+  //     callback: (frame) {
+  //       var result = json.decode(frame.body!);
+  //       print("passenger: " + result);
+  //     },
+  //   );
+
+  //   // Timer.periodic(Duration(seconds: 10), (_) {
+  //   //   const message = {
+  //   //     "senderPhone": "sname",
+  //   //     "receiverPhone": "rname",
+  //   //     "location": {"x": 1.2222, "y": 2.444},
+  //   //   };
+  //   //   stompClient.send(
+  //   //     destination: '/app/chat',
+  //   //     body: json.encode(message),
+  //   //   );
+  //   // });
+  // }
+
   Future<bool> rideDetails(String id) async {
     try {
       dynamic response = await getRide(
@@ -154,6 +193,54 @@ class RideController extends GetxController {
 
         debugPrint(
             "ride - request : " + ride.value.rideRequest.toJson().toString());
+        // try {
+        //   stompClient = StompClient(
+        //       config: StompConfig.SockJS(
+        //     url: 'http://ridex.ml/ws',
+        //     onConnect: onConnect,
+        //     beforeConnect: () async {
+        //       print('waiting to connect...');
+        //       await Future.delayed(Duration(milliseconds: 200));
+        //       print('connecting...');
+        //     },
+        //     onWebSocketError: (dynamic error) => print(error.toString()),
+        //     // stompConnectHeaders: {'Authorization': 'Bearer yourToken'},
+        //     // webSocketConnectHeaders: {'Authorization': 'Bearer yourToken'},
+        //   ));
+        //   stompClient.activate();
+
+        //   // Timer.periodic(Duration(seconds: 2), (Timer timer) async {
+        //   //   debugPrint("safa");
+        //   //   Position position = await Geolocator.getCurrentPosition(
+        //   //       desiredAccuracy: LocationAccuracy.high);
+
+        //   //   var message = {
+        //   //     "senderPhone": Get.find<UserController>().driver.value.phone,
+        //   //     "receiverPhone": Get.find<RideController>()
+        //   //         .ride
+        //   //         .value
+        //   //         .rideRequest
+        //   //         .passenger
+        //   //         .phone,
+        //   //     "location": {"x": position.latitude, "y": position.longitude},
+        //   //   };
+        //   //   stompClient.send(
+        //   //     destination: '/app/chat',
+        //   //     body: json.encode(message),
+        //   //   );
+        //   //   if (Get.find<RideController>().ride.value.rideStatus ==
+        //   //           RideState.DROPPED ||
+        //   //       Get.find<RideController>().ride.value.rideStatus ==
+        //   //           RideState.FINISHED ||
+        //   //       Get.find<RideController>().ride.value.rideStatus ==
+        //   //           RideState.NOTRIP) {
+        //   //     timer.cancel();
+        //   //   }
+        //   // });
+        // } catch (e) {
+        //   debugPrint(e.toString());
+        // }
+        // stompClient.activate();
         return true;
       } else {
         return false;
@@ -215,18 +302,29 @@ class RideController extends GetxController {
   Future<bool> rideConfirmed({
     required passengerFeedback,
     required driverRating,
+    required complain,
   }) async {
     try {
       //hardcoded id
       String id = ride.value.id;
+      debugPrint("complain " + complain.toString());
       dynamic response = await confirm(
         id: id,
         passengerFeedback: passengerFeedback,
         driverRating: driverRating,
         token: Get.find<UserController>().passenger.value.token,
       );
-
+      debugPrint("complain " + complain.toString());
       if (!response["error"]) {
+        debugPrint("complain " + complain.toString());
+        if (complain) {
+          dynamic response2 = await complain(
+            id: id,
+            complain: passengerFeedback,
+            token: Get.find<UserController>().passenger.value.token,
+          );
+          debugPrint("Complain response: " + response2["body"]);
+        }
         updateRide(
           response["body"],
         );

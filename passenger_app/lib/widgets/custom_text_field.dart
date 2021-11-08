@@ -69,6 +69,7 @@ class CustomTextField extends StatelessWidget {
           minLines: 1,
           textAlignVertical: TextAlignVertical.center,
           inputFormatters: inputFormatters,
+          onChanged: onChanged,
           decoration: InputDecoration(
             border: InputBorder.none,
             hintText: hintText,

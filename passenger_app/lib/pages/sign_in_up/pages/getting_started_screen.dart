@@ -129,7 +129,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
                     ),
                     dropDown: SizedBox(),
                     keyboardType: TextInputType.number,
-                    onChanged: () {},
+                    onChanged: (String value) {},
                     phoneNumberPrefixWidth: 110,
                     inputFormatters: [
                       MaskedInputFormatter("## ### ####",

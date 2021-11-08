@@ -6,9 +6,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:passenger_app/controllers/map_controller.dart';
 import 'package:passenger_app/controllers/ride_controller.dart';
 import 'package:passenger_app/modals/driver.dart';
 import 'package:passenger_app/modals/location.dart';
+import 'package:passenger_app/pages/home/home_screens.dart';
 import 'package:passenger_app/pages/home/map_screens/widgets/floating_panel/finding_ride_floating_panel.dart';
 import 'package:passenger_app/pages/home/map_screens/widgets/floating_panel/ride_floating_panel.dart';
 import 'package:passenger_app/pages/home/map_screens/widgets/floating_panel/select_vechicle_type_floating_panel.dart';
@@ -18,18 +20,22 @@ import 'package:passenger_app/utils/firebase_notification_handler.dart';
 import 'package:passenger_app/utils/ride_request_state_enum.dart';
 import 'package:passenger_app/utils/ride_state_enum.dart';
 import 'package:passenger_app/theme/colors.dart';
+import 'package:passenger_app/utils/vehicle_type.dart';
+import 'package:passenger_app/widgets/circular_loading.dart';
 import 'package:passenger_app/widgets/secondary_button_with_icon.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 // import 'package:sockjs_client_wrapper/sockjs_client_wrapper.dart';
 // import "package:stomp/stomp.dart";
 // import "package:stomp/vm.dart" show connect;
-// import 'dart:convert';
+import 'dart:convert';
 
-// import 'package:stomp_dart_client/stomp.dart';
-// import 'package:stomp_dart_client/stomp_config.dart';
-// import 'package:stomp_dart_client/stomp_frame.dart';
+import 'package:stomp_dart_client/stomp.dart';
+import 'package:stomp_dart_client/stomp_config.dart';
+import 'package:stomp_dart_client/stomp_frame.dart';
 
 import 'package:geolocator/geolocator.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MapScreen extends StatefulWidget {
   MapScreen({
@@ -45,6 +51,7 @@ class _MapScreenState extends State<MapScreen> {
   bool loading = false;
   bool loadingGreen = false;
   bool loadingRed = false;
+  bool complain = false;
 
   TextEditingController paymentMethod = TextEditingController();
   int slectedMethod = 0;
@@ -54,19 +61,12 @@ class _MapScreenState extends State<MapScreen> {
       "method": "Cash Payment",
       "index": 0,
     },
-    {
-      "Icon": Icons.credit_card,
-      "method": "Card Payment",
-      "index": 1,
-    }
+    // {
+    //   "Icon": Icons.credit_card,
+    //   "method": "Card Payment",
+    //   "index": 1,
+    // }
   ];
-
-  Driver driver = Driver(
-    image: "a",
-    name: "Avishka Rathnavibushana",
-    number: "+94711737706",
-    vechicleType: "Toyota Corolla",
-  );
 
   // RideState rideState = RideState.NOTRIP;
   // RideRequestState rideRequest = RideRequestState.NOTRIP;
@@ -74,30 +74,30 @@ class _MapScreenState extends State<MapScreen> {
   int rating = 1;
   TextEditingController comment = TextEditingController();
 
+  MapController mapController = Get.find<MapController>();
   final CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(37.42796133580664, -122.085749655962),
     zoom: 14.4746,
   );
 
-  Completer<GoogleMapController> _controllerGoogleMap = Completer();
+  // late Position currentPosition;
+  // Future<void> locatePosition() async {
+  //   Position position = await Geolocator.getCurrentPosition(
+  //       desiredAccuracy: LocationAccuracy.high);
+  //   currentPosition = position;
 
-  late GoogleMapController newGoogleMapController;
+  //   LatLng latLastPosition = LatLng(position.latitude, position.longitude);
 
-  late Position currentPosition;
+  //   CameraPosition cameraPosition =
+  //       CameraPosition(target: latLastPosition, zoom: 14);
 
-  Future<void> locatePosition() async {
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-    currentPosition = position;
+  //   newGoogleMapController
+  //       .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
 
-    LatLng latLastPosition = LatLng(position.latitude, position.longitude);
-
-    CameraPosition cameraPosition =
-        CameraPosition(target: latLastPosition, zoom: 14);
-
-    newGoogleMapController
-        .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
-  }
+  //   String address =
+  //       await Get.find<MapController>().searchCoordinateAddress(position);
+  //   debugPrint("My address: " + address);
+  // }
 
   @override
   void initState() {
@@ -106,57 +106,32 @@ class _MapScreenState extends State<MapScreen> {
       paymentMethod.text = methods[0]["method"];
       slectedMethod = 0;
     });
-    // loadSocket();
   }
 
-  // void loadSocket() {
-  //   // final echoUri = Uri.parse('http://localhost:8080/ws');
-  //   // final options = SockJSOptions(
-  //   //     transports: ['websocket', 'xhr-streaming', 'xhr-polling']);
-  //   // final socket = SockJSClient(echoUri, options: options);
-
-  //   // connect("foo.server.com").then((StompClient client) {
-  //   //   client.subscribeString("/foo",
-  //   //       (Map<String, String> headers, String message) {
-  //   //     print("Recieve $message");
-  //   //   },socket);
-
-  //   //   client.sendString("/foo", "Hi, Stomp");
-  //   // });
-  //   stompClient = StompClient(
-  //     config: StompConfig(
-  //       url: 'http://localhost:8080/ws',
-  //       onConnect: onConnect,
-  //       beforeConnect: () async {
-  //         print('waiting to connect...');
-  //         await Future.delayed(Duration(milliseconds: 200));
-  //         print('connecting...');
-  //       },
-  //       onWebSocketError: (dynamic error) => print(error.toString()),
-  //       stompConnectHeaders: {'Authorization': 'Bearer yourToken'},
-  //       webSocketConnectHeaders: {'Authorization': 'Bearer yourToken'},
-  //     ),
-  //   );
-  // }
-
   // void onConnect(StompFrame frame) {
+  //   var sname = "+94763067706";
   //   stompClient.subscribe(
-  //     destination: '/ride/request',
+  //     destination: "/user/" + sname + "/queue/messages",
   //     callback: (frame) {
   //       List<dynamic>? result = json.decode(frame.body!);
   //       print(result);
   //     },
   //   );
 
-  //   Timer.periodic(Duration(seconds: 10), (_) {
-  //     stompClient.send(
-  //       destination: '/app/request',
-  //       body: json.encode({'a': 123}),
-  //     );
-  //   });
+  // Timer.periodic(Duration(seconds: 10), (_) {
+  //   const message = {
+  //     "senderPhone": "sname",
+  //     "receiverPhone": "rname",
+  //     "location": {"x": 1.2222, "y": 2.444},
+  //   };
+  //   stompClient.send(
+  //     destination: '/app/chat',
+  //     body: json.encode(message),
+  //   );
+  // });
   // }
 
-  // late final stompClient;
+  var stompClient;
 
   Widget _floatingCollapsed() {
     return Container(
@@ -255,15 +230,10 @@ class _MapScreenState extends State<MapScreen> {
         loadingGreen = true;
       });
       bool result = await Get.find<RideController>().rideRequestSending(
-        startLocation: Location(
-          x: 0,
-          y: 0,
-        ),
-        endLocation: Location(
-          x: 10,
-          y: 10,
-        ),
-        distance: 10,
+        startLocation: mapController.start.value.location,
+        endLocation: mapController.to.value.location,
+        distance: mapController.directionDetails.value.distanceValue.toDouble(),
+        vehicleType: Get.find<RideController>().vehicleType.value,
       );
       setState(() {
         loadingGreen = false;
@@ -287,6 +257,8 @@ class _MapScreenState extends State<MapScreen> {
       setState(() {
         loadingGreen = false;
       });
+
+      widget.onBack();
     }
   }
 
@@ -295,7 +267,11 @@ class _MapScreenState extends State<MapScreen> {
       setState(() {
         loadingGreen = true;
       });
-      // real action is to call driver
+      String phone =
+          Get.find<RideController>().ride.value.rideRequest.driver.phone;
+      await canLaunch("tel:$phone")
+          ? await launch("tel:$phone")
+          : Get.snackbar("Somethimg is wrong!", "Please try again later.");
       setState(() {
         loadingGreen = false;
       });
@@ -307,7 +283,11 @@ class _MapScreenState extends State<MapScreen> {
       setState(() {
         loadingGreen = true;
       });
-      // real action is to call driver
+      String phone =
+          Get.find<RideController>().ride.value.rideRequest.driver.phone;
+      await canLaunch("tel:$phone")
+          ? await launch("tel:$phone")
+          : Get.snackbar("Somethimg is wrong!", "Please try again later.");
       setState(() {
         loadingGreen = false;
       });
@@ -335,6 +315,7 @@ class _MapScreenState extends State<MapScreen> {
       bool result = await Get.find<RideController>().rideConfirmed(
         passengerFeedback: comment.text,
         driverRating: rating,
+        complain: complain,
       );
 
       setState(() {
@@ -342,6 +323,7 @@ class _MapScreenState extends State<MapScreen> {
         comment.text = "";
         rating = 1;
       });
+      widget.onBack();
     }
   }
 
@@ -353,11 +335,13 @@ class _MapScreenState extends State<MapScreen> {
       bool result = await Get.find<RideController>().rideConfirmed(
         passengerFeedback: "",
         driverRating: 0,
+        complain: false,
       );
 
       setState(() {
         loadingRed = false;
       });
+      widget.onBack();
     }
   }
 
@@ -392,19 +376,27 @@ class _MapScreenState extends State<MapScreen> {
             Column(
               children: [
                 Expanded(
-                  child: GoogleMap(
-                    mapType: MapType.normal,
-                    initialCameraPosition: _kGooglePlex,
-                    myLocationButtonEnabled: true,
-                    myLocationEnabled: true,
-                    zoomGesturesEnabled: true,
-                    zoomControlsEnabled: true,
-                    onMapCreated: (GoogleMapController controller) {
-                      _controllerGoogleMap.complete(controller);
-                      newGoogleMapController = controller;
+                  child: Obx(
+                    () => GoogleMap(
+                      mapType: MapType.normal,
+                      initialCameraPosition: _kGooglePlex,
+                      myLocationButtonEnabled: true,
+                      myLocationEnabled: true,
+                      zoomGesturesEnabled: true,
+                      zoomControlsEnabled: true,
+                      onMapCreated: (GoogleMapController controller) {
+                        Completer<GoogleMapController> _controllerGoogleMap =
+                            Completer();
+                        _controllerGoogleMap.complete(controller);
+                        mapController.newGoogleMapController = controller;
 
-                      locatePosition();
-                    },
+                        //locatePosition();
+                        mapController.setPolyLines();
+                      },
+                      polylines: mapController.polyLineSet.value,
+                      markers: mapController.markersSet.value,
+                      circles: mapController.circlesSet.value,
+                    ),
                   ),
                 ),
               ],
@@ -470,7 +462,7 @@ class _MapScreenState extends State<MapScreen> {
                                           .value
                                           .rideRequest
                                           .driver,
-                                      time: "1 min",
+                                      time: "",
                                       rideState: Get.find<RideController>()
                                           .ride
                                           .value
@@ -499,7 +491,7 @@ class _MapScreenState extends State<MapScreen> {
                                               .value
                                               .rideRequest
                                               .driver,
-                                          time: "1 min",
+                                          time: "",
                                           rideState: Get.find<RideController>()
                                               .ride
                                               .value
@@ -545,6 +537,10 @@ class _MapScreenState extends State<MapScreen> {
                   ? TripCompleted(
                       loading: loading,
                       onPressed: tripCompletedOnPressed,
+                      trip: mapController.directionDetails.value,
+                      pickUp: mapController.start.value.getLocationText(),
+                      dropOff: mapController.to.value.getLocationText(),
+                      payment: Get.find<RideController>().ride.value.payment,
                     )
                   : Get.find<RideController>().ride.value.rideStatus ==
                           RideState.PASSENGERRATEANDCOMMENT
@@ -582,37 +578,95 @@ class _MapScreenState extends State<MapScreen> {
                             });
                           },
                           comment: comment,
-                        )
+                          complain: complain,
+                          onComplain: (value) {
+                            setState(() {
+                              complain = !complain;
+                            });
+                            debugPrint(complain.toString());
+                          })
                       : Container(),
             ),
             Align(
               alignment: Alignment.topCenter,
               child: Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: SecondaryButtonWithIcon(
-                      icon: Icons.online_prediction,
-                      iconColor: primaryColorWhite,
-                      onPressed: () async {
-                        setState(() {
-                          Get.find<RideController>().clearRide();
-                          Get.find<RideController>()
-                              .ride
-                              .value
-                              .rideRequest
-                              .status = RideRequestState.SELECTVECHICLE;
-                        });
-                        setState(() {});
-                      },
-                      text: "get ride",
-                      boxColor: primaryColorDark,
-                      shadowColor: primaryColorDark,
-                      width: width,
-                    ),
-                  ),
+                  // Padding(
+                  //   padding: const EdgeInsets.only(top: 10),
+                  //   child: SecondaryButtonWithIcon(
+                  //     icon: Icons.online_prediction,
+                  //     iconColor: primaryColorWhite,
+                  //     onPressed: () async {
+                  //       setState(() {
+                  //         Get.find<RideController>().clearRide();
+                  //         Get.find<RideController>()
+                  //             .ride
+                  //             .value
+                  //             .rideRequest
+                  //             .status = RideRequestState.SELECTVECHICLE;
+                  //       });
+                  //       setState(() {});
+                  //     },
+                  //     text: "get ride",
+                  //     boxColor: primaryColorDark,
+                  //     shadowColor: primaryColorDark,
+                  //     width: width,
+                  //   ),
+                  // ),
+                  // Padding(
+                  //   padding: const EdgeInsets.only(top: 10),
+                  //   child: SecondaryButtonWithIcon(
+                  //     icon: Icons.online_prediction,
+                  //     iconColor: primaryColorWhite,
+                  //     onPressed: () async {
+                  //       setState(() {
+                  //         Get.find<RideController>().clearRide();
+                  //         Get.find<RideController>()
+                  //             .ride
+                  //             .value
+                  //             .rideRequest
+                  //             .status = RideRequestState.SELECTVECHICLE;
+                  //       });
+                  //       setState(() {});
+                  //     },
+                  //     text: "subscribe",
+                  //     boxColor: primaryColorDark,
+                  //     shadowColor: primaryColorDark,
+                  //     width: width,
+                  //   ),
+                  // ),
+                  // Padding(
+                  //   padding: const EdgeInsets.only(top: 10),
+                  //   child: SecondaryButtonWithIcon(
+                  //     icon: Icons.online_prediction,
+                  //     iconColor: primaryColorWhite,
+                  //     onPressed: () {
+                  //       const message = {
+                  //         "senderPhone": "sname",
+                  //         "receiverPhone": "rname",
+                  //         "location": {"x": 1.2222, "y": 2.444},
+                  //       };
+                  //       stompClient.send(
+                  //         destination: '/app/chat',
+                  //         body: json.encode(message),
+                  //       );
+                  //     },
+                  //     text: "send message",
+                  //     boxColor: primaryColorDark,
+                  //     shadowColor: primaryColorDark,
+                  //     width: width,
+                  //   ),
+                  // ),
                 ],
               ),
+            ),
+            Obx(
+              () => mapController.polyLineLoading.value
+                  ? Container(
+                      color: primaryColorBlack.withOpacity(0.5),
+                      child: Center(child: CircularLoading()),
+                    )
+                  : Container(),
             ),
           ],
         ),

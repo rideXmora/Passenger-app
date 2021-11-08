@@ -92,44 +92,38 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 children: [
                   SizedBox(
-                    height: 18,
+                    height: 70,
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 30),
-                    child: Obx(
-                      () => GestureDetector(
-                        onTap: widget.onTap,
-                        child: Stack(
-                          children: [
-                            CustomTextField(
-                              readOnly: true,
-                              height: height,
-                              width: width,
-                              // controller: whereController,
-                              controller: TextEditingController(
-                                  text: Get.find<Controller>()
-                                      .counter
-                                      .value
-                                      .toString()),
-                              hintText: "Where to ...",
-                              prefixBoxColor: primaryColorBlack,
-                              prefixIcon: Icon(
-                                Icons.location_on_rounded,
-                                color: primaryColorLight,
-                              ),
-                              dropDown: SizedBox(),
-                              onChanged: () {},
-                              phoneNumberPrefix: SizedBox(),
-                              suffix: SizedBox(),
-                              inputFormatters: [],
+                    child: GestureDetector(
+                      onTap: widget.onTap,
+                      child: Stack(
+                        children: [
+                          CustomTextField(
+                            readOnly: true,
+                            height: height,
+                            width: width,
+                            // controller: whereController,
+                            controller: TextEditingController(text: ""),
+                            hintText: "Where to ...",
+                            prefixBoxColor: primaryColorBlack,
+                            prefixIcon: Icon(
+                              Icons.location_on_rounded,
+                              color: primaryColorLight,
                             ),
-                            Container(
-                              width: width,
-                              height: 54,
-                              color: Colors.transparent,
-                            ),
-                          ],
-                        ),
+                            dropDown: SizedBox(),
+                            onChanged: (String value) {},
+                            phoneNumberPrefix: SizedBox(),
+                            suffix: SizedBox(),
+                            inputFormatters: [],
+                          ),
+                          Container(
+                            width: width,
+                            height: 54,
+                            color: Colors.transparent,
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -147,30 +141,34 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             child: Column(
                               children: [
-                                PreviousLocation(
-                                  icon: Icons.home_rounded,
-                                  divider: true,
-                                  title: "Home",
-                                  subTitle: "Anandarama Rd, Moratuwa.",
-                                ),
-                                PreviousLocation(
-                                  icon: Icons.history,
-                                  divider: true,
-                                  title: "Katubedda Bus Stop",
-                                  subTitle: "Anandarama Rd, Moratuwa.",
-                                ),
-                                PreviousLocation(
-                                  icon: Icons.history,
-                                  divider: true,
-                                  title: "Katubedda Bus Stop",
-                                  subTitle: "Anandarama Rd, Moratuwa.",
-                                ),
-                                PreviousLocation(
-                                  icon: Icons.history,
-                                  divider: false,
-                                  title: "Katubedda Bus Stop",
-                                  subTitle: "Anandarama Rd, Moratuwa.",
-                                ),
+                                // PreviousLocation(
+                                //   icon: Icons.home_rounded,
+                                //   divider: true,
+                                //   title: "Home",
+                                //   subTitle: "Anandarama Rd, Moratuwa.",
+                                //   onTap: () {},
+                                // ),
+                                // PreviousLocation(
+                                //   icon: Icons.history,
+                                //   divider: true,
+                                //   title: "Katubedda Bus Stop",
+                                //   subTitle: "Anandarama Rd, Moratuwa.",
+                                //   onTap: () {},
+                                // ),
+                                // PreviousLocation(
+                                //   icon: Icons.history,
+                                //   divider: true,
+                                //   title: "Katubedda Bus Stop",
+                                //   subTitle: "Anandarama Rd, Moratuwa.",
+                                //   onTap: () {},
+                                // ),
+                                // PreviousLocation(
+                                //   icon: Icons.history,
+                                //   divider: false,
+                                //   title: "Katubedda Bus Stop",
+                                //   subTitle: "Anandarama Rd, Moratuwa.",
+                                //   onTap: () {},
+                                // ),
                               ],
                             ),
                           ),

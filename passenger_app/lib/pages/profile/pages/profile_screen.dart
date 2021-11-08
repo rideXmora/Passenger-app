@@ -30,6 +30,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   TextEditingController languageController = TextEditingController();
   bool loading = false;
   List<String> languageList = ["English", "Sinhala", "Tamil"];
+
   bool pageLoading = true;
   bool change = false;
 
@@ -207,49 +208,52 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           height: 17,
                         ),
                         Center(
-                          child: Container(
-                            height: 115,
-                            width: 115,
-                            child: Stack(
-                              children: [
-                                // * Image
-                                Container(
-                                  width: 115,
+                          child: edit
+                              ? Container()
+                              : Container(
                                   height: 115,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    image: DecorationImage(
-                                      fit: BoxFit.cover,
-                                      image: AssetImage(
-                                          "assets/images/images/user_icon.png"),
-                                    ),
-                                  ),
-                                ),
-                                edit
-                                    ? Align(
-                                        alignment: Alignment.bottomRight,
-                                        child: Container(
-                                          width: 35,
-                                          height: 35,
-                                          decoration: BoxDecoration(
-                                            color: primaryColor,
-                                            borderRadius:
-                                                BorderRadius.circular(200),
-                                          ),
-                                          child: IconButton(
-                                            icon: Icon(Icons.camera_alt),
-                                            color: Colors.white,
-                                            iconSize: 18,
-                                            onPressed: () {
-                                              //_pickImageFromToProfile(context);
-                                            },
+                                  width: 115,
+                                  child: Stack(
+                                    children: [
+                                      // * Image
+                                      Container(
+                                        width: 115,
+                                        height: 115,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          image: DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image: AssetImage(
+                                                "assets/images/images/user_icon.png"),
                                           ),
                                         ),
-                                      )
-                                    : Container(),
-                              ],
-                            ),
-                          ),
+                                      ),
+                                      edit
+                                          ? Align(
+                                              alignment: Alignment.bottomRight,
+                                              child: Container(
+                                                width: 35,
+                                                height: 35,
+                                                decoration: BoxDecoration(
+                                                  color: primaryColor,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          200),
+                                                ),
+                                                child: IconButton(
+                                                  icon: Icon(Icons.camera_alt),
+                                                  color: Colors.white,
+                                                  iconSize: 18,
+                                                  onPressed: () {
+                                                    //_pickImageFromToProfile(context);
+                                                  },
+                                                ),
+                                              ),
+                                            )
+                                          : Container(),
+                                    ],
+                                  ),
+                                ),
                         ),
                         SizedBox(
                           height: 34,
@@ -266,7 +270,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             color: primaryColorLight,
                           ),
                           dropDown: SizedBox(),
-                          onChanged: () {},
+                          onChanged: (String value) {},
                           phoneNumberPrefix: SizedBox(),
                           suffix: SizedBox(),
                           inputFormatters: [],
@@ -286,7 +290,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             color: primaryColorLight,
                           ),
                           dropDown: SizedBox(),
-                          onChanged: () {},
+                          onChanged: (String value) {},
                           phoneNumberPrefix: SizedBox(),
                           suffix: SizedBox(),
                           inputFormatters: [],
@@ -311,7 +315,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     ),
                                     dropDown: SizedBox(),
                                     keyboardType: TextInputType.number,
-                                    onChanged: () {},
+                                    onChanged: (String value) {},
                                     phoneNumberPrefixWidth: 110,
                                     inputFormatters: [
                                       MaskedInputFormatter("## ### ####",
@@ -389,7 +393,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             color: primaryColorLight,
                           ),
                           dropDown: SizedBox(),
-                          onChanged: () {},
+                          onChanged: (String value) {},
                           phoneNumberPrefix: SizedBox(),
                           suffix: IgnorePointer(
                             ignoring: edit ? false : true,

@@ -87,6 +87,7 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
               iconColor: primaryColorWhite,
               onPressed: () async {
                 SharedPreferences store = await SharedPreferences.getInstance();
+                debugPrint("selected: " + selected.toString());
                 switch (selected) {
                   case 1:
                     break;
@@ -109,6 +110,10 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                       'en_UK',
                     );
                 }
+                String? lan = store.getString(
+                  "lan",
+                );
+                debugPrint(lan.toString());
                 Get.to(GettingStartedScreen());
               },
               text: "",

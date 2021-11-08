@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:passenger_app/api/passenger_api.dart';
+import 'package:passenger_app/controllers/map_controller.dart';
+import 'package:passenger_app/modals/location.dart';
 import 'package:passenger_app/modals/passenger.dart';
+import 'package:passenger_app/modals/past_trip.dart';
 import 'package:passenger_app/pages/bottom_navigation_bar_handler.dart';
 import 'package:passenger_app/utils/language.dart';
+import 'package:passenger_app/utils/payment_method.dart';
 import 'package:passenger_app/utils/validation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
 
 class UserController extends GetxController {
+  var pastTrips = [].obs;
   var passenger = Passenger(
     id: "",
     email: "",
@@ -110,6 +116,8 @@ class UserController extends GetxController {
       dynamic response = await profileUpdate(
           name: name,
           email: email,
+          notificationToken:
+              Get.find<UserController>().passenger.value.notificationToken,
           token: Get.find<UserController>().passenger.value.token);
       debugPrint(response["enabled"].toString());
 
@@ -140,5 +148,53 @@ class UserController extends GetxController {
 
   void updateNotificationToken(String token) {
     passenger.value.notificationToken = token;
+  }
+
+  Future<void> getPastTripDetails() async {
+    dynamic response =
+        await past(token: Get.find<UserController>().passenger.value.token);
+
+    debugPrint(response["enabled"].toString());
+
+    if (!response["error"]) {
+      pastTrips.clear();
+      for (var i = 0; i < response["body"].length; i++) {
+        Location startLocation = Location(
+            x: response["body"][i]["rideRequest"]["startLocation"]["x"],
+            y: response["body"][i]["rideRequest"]["startLocation"]["y"]);
+        Location endLocation = Location(
+            x: response["body"][i]["rideRequest"]["endLocation"]["x"],
+            y: response["body"][i]["rideRequest"]["endLocation"]["y"]);
+
+        String startLocationText =
+            await Get.find<MapController>().searchAddress(startLocation);
+        String endLocationText =
+            await Get.find<MapController>().searchAddress(endLocation);
+        int distance = response["body"][i]["rideRequest"]["distance"];
+        double payment = response["body"][i]["payment"];
+        PaymentMethod paymentMethod = PaymentMethod.CASH;
+        DateTime date = new DateTime.fromMillisecondsSinceEpoch(
+            response["body"][i]["rideRequest"]["timestamp"] * 1000);
+
+        String dateString = date.year.toString() +
+            " " +
+            DateFormat('MMMM').format(DateTime(0, date.month)) +
+            " " +
+            date.day.toString();
+        PastTrip pastTrip = PastTrip(
+          startLocation: startLocation,
+          endLocation: endLocation,
+          startLocationText: startLocationText,
+          endLocationText: endLocationText,
+          distance: distance,
+          payment: payment,
+          paymentMethod: PaymentMethod.CASH,
+          date: dateString,
+        );
+        pastTrips.add(pastTrip);
+      }
+
+      pastTrips.refresh();
+    }
   }
 }

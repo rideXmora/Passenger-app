@@ -7,8 +7,8 @@ import 'package:passenger_app/widgets/secondary_button.dart';
 class RateAndComment extends StatelessWidget {
   RateAndComment({
     Key? key,
-    this.onCancel,
     this.onPressed,
+    this.onCancel,
     required this.rating,
     this.onRatingChanged1,
     this.onRatingChanged2,
@@ -20,6 +20,8 @@ class RateAndComment extends StatelessWidget {
     required this.loadingRed,
     required this.greenTopic,
     required this.redTopic,
+    required this.complain,
+    required this.onComplain,
   }) : super(key: key);
   final onRatingChanged1;
   final onRatingChanged2;
@@ -34,6 +36,8 @@ class RateAndComment extends StatelessWidget {
   final bool loadingRed;
   final String greenTopic;
   final String redTopic;
+  final bool complain;
+  final onComplain;
 
   @override
   Widget build(BuildContext context) {
@@ -109,7 +113,7 @@ class RateAndComment extends StatelessWidget {
                       padding: const EdgeInsets.only(
                         left: 5,
                         top: 10,
-                        bottom: 20,
+                        bottom: 5,
                       ),
                       child: Container(
                         decoration: BoxDecoration(
@@ -126,7 +130,7 @@ class RateAndComment extends StatelessWidget {
                             ),
                             controller: comment,
                             minLines: 1,
-                            maxLines: 3,
+                            maxLines: 2,
                             keyboardType: TextInputType.multiline,
                             textAlignVertical: TextAlignVertical.center,
                             decoration: InputDecoration(
@@ -141,6 +145,23 @@ class RateAndComment extends StatelessWidget {
                           ),
                         ),
                       ),
+                    ),
+                    Row(
+                      children: [
+                        Checkbox(
+                          value: complain,
+                          onChanged: onComplain,
+                          activeColor: primaryColor,
+                        ),
+                        Text(
+                          "Do you want to make a complain?",
+                          style: TextStyle(
+                            color: primaryColorBlack,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
                     ),
                     Row(
                       children: [
