@@ -20,6 +20,7 @@ import 'package:passenger_app/utils/firebase_notification_handler.dart';
 import 'package:passenger_app/utils/ride_request_state_enum.dart';
 import 'package:passenger_app/utils/ride_state_enum.dart';
 import 'package:passenger_app/theme/colors.dart';
+import 'package:passenger_app/utils/vehicle_type.dart';
 import 'package:passenger_app/widgets/circular_loading.dart';
 import 'package:passenger_app/widgets/secondary_button_with_icon.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -104,24 +105,6 @@ class _MapScreenState extends State<MapScreen> {
       paymentMethod.text = methods[0]["method"];
       slectedMethod = 0;
     });
-    // try {
-    //   stompClient = StompClient(
-    //       config: StompConfig.SockJS(
-    //     url: 'http://ridex.ml/ws',
-    //     onConnect: onConnect,
-    //     beforeConnect: () async {
-    //       print('waiting to connect...');
-    //       await Future.delayed(Duration(milliseconds: 200));
-    //       print('connecting...');
-    //     },
-    //     onWebSocketError: (dynamic error) => print(error.toString()),
-    //     // stompConnectHeaders: {'Authorization': 'Bearer yourToken'},
-    //     // webSocketConnectHeaders: {'Authorization': 'Bearer yourToken'},
-    //   ));
-    //   stompClient.activate();
-    // } catch (e) {
-    //   debugPrint(e.toString());
-    // }
   }
 
   // void onConnect(StompFrame frame) {
@@ -134,17 +117,17 @@ class _MapScreenState extends State<MapScreen> {
   //     },
   //   );
 
-  //   // Timer.periodic(Duration(seconds: 10), (_) {
-  //   //   const message = {
-  //   //     "senderPhone": "sname",
-  //   //     "receiverPhone": "rname",
-  //   //     "location": {"x": 1.2222, "y": 2.444},
-  //   //   };
-  //   //   stompClient.send(
-  //   //     destination: '/app/chat',
-  //   //     body: json.encode(message),
-  //   //   );
-  //   // });
+  // Timer.periodic(Duration(seconds: 10), (_) {
+  //   const message = {
+  //     "senderPhone": "sname",
+  //     "receiverPhone": "rname",
+  //     "location": {"x": 1.2222, "y": 2.444},
+  //   };
+  //   stompClient.send(
+  //     destination: '/app/chat',
+  //     body: json.encode(message),
+  //   );
+  // });
   // }
 
   var stompClient;
@@ -249,6 +232,7 @@ class _MapScreenState extends State<MapScreen> {
         startLocation: mapController.start.value.location,
         endLocation: mapController.to.value.location,
         distance: mapController.directionDetails.value.distanceValue.toDouble(),
+        vehicleType: Get.find<RideController>().vehicleType.value,
       );
       setState(() {
         loadingGreen = false;
@@ -322,6 +306,7 @@ class _MapScreenState extends State<MapScreen> {
       bool result = await Get.find<RideController>().rideConfirmed(
         passengerFeedback: comment.text,
         driverRating: rating,
+        complain: complain,
       );
 
       setState(() {
@@ -341,6 +326,7 @@ class _MapScreenState extends State<MapScreen> {
       bool result = await Get.find<RideController>().rideConfirmed(
         passengerFeedback: "",
         driverRating: 0,
+        complain: false,
       );
 
       setState(() {
@@ -646,15 +632,15 @@ class _MapScreenState extends State<MapScreen> {
                   //     icon: Icons.online_prediction,
                   //     iconColor: primaryColorWhite,
                   //     onPressed: () {
-                  //       // const message = {
-                  //       //   "senderPhone": "sname",
-                  //       //   "receiverPhone": "rname",
-                  //       //   "location": {"x": 1.2222, "y": 2.444},
-                  //       // };
-                  //       // stompClient.send(
-                  //       //   destination: '/app/chat',
-                  //       //   body: json.encode(message),
-                  //       // );
+                  //       const message = {
+                  //         "senderPhone": "sname",
+                  //         "receiverPhone": "rname",
+                  //         "location": {"x": 1.2222, "y": 2.444},
+                  //       };
+                  //       stompClient.send(
+                  //         destination: '/app/chat',
+                  //         body: json.encode(message),
+                  //       );
                   //     },
                   //     text: "send message",
                   //     boxColor: primaryColorDark,
