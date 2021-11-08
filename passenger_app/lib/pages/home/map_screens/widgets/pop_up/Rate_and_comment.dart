@@ -154,7 +154,7 @@ class RateAndComment extends StatelessWidget {
                           activeColor: primaryColor,
                         ),
                         Text(
-                          "Do you want to make a complain?",
+                          "Make a complain?",
                           style: TextStyle(
                             color: primaryColorBlack,
                             fontSize: 18,
