@@ -302,18 +302,29 @@ class RideController extends GetxController {
   Future<bool> rideConfirmed({
     required passengerFeedback,
     required driverRating,
+    required complain,
   }) async {
     try {
       //hardcoded id
       String id = ride.value.id;
+      debugPrint("complain " + complain.toString());
       dynamic response = await confirm(
         id: id,
         passengerFeedback: passengerFeedback,
         driverRating: driverRating,
         token: Get.find<UserController>().passenger.value.token,
       );
-
+      debugPrint("complain " + complain.toString());
       if (!response["error"]) {
+        debugPrint("complain " + complain.toString());
+        if (complain) {
+          dynamic response2 = await complain(
+            id: id,
+            complain: passengerFeedback,
+            token: Get.find<UserController>().passenger.value.token,
+          );
+          debugPrint("Complain response: " + response2["body"]);
+        }
         updateRide(
           response["body"],
         );

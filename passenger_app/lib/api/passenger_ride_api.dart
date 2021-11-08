@@ -62,3 +62,19 @@ Future<dynamic> cancel({required String id, required String token}) async {
   );
   return response;
 }
+
+Future<dynamic> complain(
+    {required String id,
+    required String complain,
+    required String token}) async {
+  String url = '/api/passenger/ride/complain';
+  dynamic response = await postRequest(
+    url: url,
+    data: {
+      "id": id,
+      "complain": complain,
+    },
+    token: token,
+  );
+  return response;
+}
