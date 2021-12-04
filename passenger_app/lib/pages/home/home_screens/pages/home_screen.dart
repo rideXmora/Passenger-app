@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:passenger_app/controllers/controller.dart';
 import 'package:passenger_app/theme/colors.dart';
 import 'package:passenger_app/widgets/custom_text_field.dart';
 import 'package:passenger_app/widgets/previous_location.dart';
