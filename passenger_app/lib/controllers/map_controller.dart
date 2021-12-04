@@ -13,6 +13,16 @@ import 'package:passenger_app/modals/place_predictions.dart';
 import 'package:passenger_app/utils/config.dart';
 
 class MapController extends GetxController {
+  late final ApiUtils apiUtils;
+  MapController(this.apiUtils);
+
+  void initState() {
+    this.apiUtils = ApiUtils();
+  }
+
+  @visibleForTesting
+  MapController.internal(this.apiUtils);
+
   var predictionList = [].obs;
   var startPredictionList = [].obs;
   var endPredictionList = [].obs;
@@ -87,7 +97,7 @@ class MapController extends GetxController {
     String url =
         "/maps/api/geocode/json?latlng=${location.x},${location.y}&key=${Google_MAP_API_KEY}";
 
-    var response = await externalAPIGetRequest(url: url);
+    var response = await apiUtils.externalAPIGetRequest(url: url);
     PlaceDetails placeDetails = PlaceDetails(
       home: "",
       street: "",
@@ -135,7 +145,7 @@ class MapController extends GetxController {
     String url =
         "/maps/api/geocode/json?latlng=${location.x},${location.y}&key=$Google_MAP_API_KEY";
 
-    var response = await externalAPIGetRequest(url: url);
+    var response = await apiUtils.externalAPIGetRequest(url: url);
     var address = "";
 
     if (response != "error") {
@@ -151,7 +161,7 @@ class MapController extends GetxController {
       String url =
           "/maps/api/place/autocomplete/json?input=$placeName&types=geocode&key=$Google_MAP_API_KEY&components=country:LK";
 
-      var response = await externalAPIGetRequest(url: url);
+      var response = await apiUtils.externalAPIGetRequest(url: url);
       if (response != "error") {
         if (response["status"] == "OK") {
           var predictions = response["predictions"];
@@ -183,7 +193,7 @@ class MapController extends GetxController {
     String url =
         "/maps/api/place/details/json?place_id=$placeId&key=$Google_MAP_API_KEY";
 
-    var response = await externalAPIGetRequest(url: url);
+    var response = await apiUtils.externalAPIGetRequest(url: url);
     Location location = Location(
       x: 0,
       y: 0,
@@ -232,7 +242,7 @@ class MapController extends GetxController {
     String url =
         "/maps/api/directions/json?destination=${endLocation.x},${endLocation.y}&origin=${startLocation.x},${startLocation.y}&key=$Google_MAP_API_KEY";
 
-    var response = await externalAPIGetRequest(url: url);
+    var response = await apiUtils.externalAPIGetRequest(url: url);
     DirectionDetails directionDetailsLocal = DirectionDetails(
       distanceText: "0",
       durationText: "0",
