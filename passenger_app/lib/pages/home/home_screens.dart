@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:passenger_app/controllers/controller.dart';
 import 'package:passenger_app/controllers/map_controller.dart';
 import 'package:passenger_app/controllers/ride_controller.dart';
 import 'package:passenger_app/controllers/user_controller.dart';
@@ -62,7 +61,6 @@ class _HomeScreensState extends State<HomeScreens> {
                     setState(() {
                       search = true;
                     });
-                    Get.find<Controller>().increment();
                   },
                 ),
               ),
@@ -122,6 +120,8 @@ class _HomeScreensState extends State<HomeScreens> {
                         });
                       },
                       toMap: () async {
+                        debugPrint(
+                            Get.find<MapController>().start.value.placeId);
                         setState(() {
                           mapLoading = true;
                         });

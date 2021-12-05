@@ -5,6 +5,7 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 
 import 'package:passenger_app/api/auth_api.dart';
 import 'package:passenger_app/api/passenger_api.dart';
+import 'package:passenger_app/api/utils.dart';
 import 'package:passenger_app/controllers/user_controller.dart';
 import 'package:passenger_app/pages/bottom_navigation_bar_handler.dart';
 import 'package:passenger_app/pages/sign_in_up/pages/getting_started_screen.dart';
@@ -16,6 +17,18 @@ import 'package:passenger_app/utils/validation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthController extends GetxController {
+  late final AuthApi authApi;
+  late final PassengerApi passengerApi;
+  AuthController(this.authApi, this.passengerApi);
+
+  void initState() {
+    this.authApi = AuthApi(ApiUtils());
+    this.passengerApi = PassengerApi(ApiUtils());
+  }
+
+  @visibleForTesting
+  AuthController.internal(this.authApi, this.passengerApi);
+
   var languageSelection = 1.obs;
   // SplashScreen data loading
   Future<void> loadData() async {
@@ -69,7 +82,7 @@ class AuthController extends GetxController {
             Get.offAll(GettingStartedScreen());
           } else {
             debugPrint("token valid");
-            dynamic response = await profile(token: token);
+            dynamic response = await passengerApi.profile(token: token);
             Get.find<UserController>().clearData();
             //change
             Get.find<UserController>().updatePassengerData(
@@ -98,7 +111,7 @@ class AuthController extends GetxController {
   // requesting otp from GettingStartedScreen
   Future<void> getOTP({required String phone, required String from}) async {
     if (phone.length == 12) {
-      dynamic response = await phoneAuth(phone: phone);
+      dynamic response = await authApi.phoneAuth(phone: phone);
       if (response["error"] != true) {
         if (from == "main") {
           Get.to(() => MobileNumberVerificationScreen(phoneNo: phone));
@@ -129,7 +142,7 @@ class AuthController extends GetxController {
         debugPrint("firebase notification error");
         return;
       }
-      dynamic response = await phoneVerify(phone: phone, otp: otp);
+      dynamic response = await authApi.phoneVerify(phone: phone, otp: otp);
       if (!response["error"]) {
         String token = response["body"]["token"];
         String refreshToken = response["body"]["refreshToken"];
@@ -175,7 +188,7 @@ class AuthController extends GetxController {
         Get.snackbar("Something is wrong!!!", "Please try again");
         return;
       }
-      dynamic response = await profileComplete(
+      dynamic response = await authApi.profileComplete(
         name: name,
         email: email,
         notificationToken: notificationToken,

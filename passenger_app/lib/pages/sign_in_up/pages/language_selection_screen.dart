@@ -60,7 +60,7 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                   setState(() {
                     selected = 1;
                   });
-                  var locale = Locale('en', 'UK');
+                  var locale = Locale('en', 'US');
                   Get.updateLocale(locale);
                 },
                 onTap_2: () {
@@ -92,7 +92,7 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                   case 1:
                     store.setString(
                       "lan",
-                      'en_UK',
+                      'en_US',
                     );
                     break;
                   case 2:
@@ -111,7 +111,7 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                   default:
                     store.setString(
                       "lan",
-                      'en_UK',
+                      'en_US',
                     );
                 }
                 String? lan = store.getString(

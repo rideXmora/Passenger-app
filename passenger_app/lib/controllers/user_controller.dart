@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:passenger_app/api/passenger_api.dart';
+import 'package:passenger_app/api/utils.dart';
 import 'package:passenger_app/controllers/map_controller.dart';
 import 'package:passenger_app/modals/location.dart';
 import 'package:passenger_app/modals/passenger.dart';
@@ -13,6 +14,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 
 class UserController extends GetxController {
+  late final PassengerApi passengerApi;
+
+  UserController(this.passengerApi);
+
+  void initState() {
+    this.passengerApi = PassengerApi(ApiUtils());
+  }
+
+  @visibleForTesting
+  UserController.internal(this.passengerApi);
+
   var pastTrips = [].obs;
   var passenger = Passenger(
     id: "",
@@ -113,7 +125,7 @@ class UserController extends GetxController {
     } else if (!isEmailValid(email)) {
       return false;
     } else {
-      dynamic response = await profileUpdate(
+      dynamic response = await passengerApi.profileUpdate(
           name: name,
           email: email,
           notificationToken:
@@ -151,8 +163,8 @@ class UserController extends GetxController {
   }
 
   Future<void> getPastTripDetails() async {
-    dynamic response =
-        await past(token: Get.find<UserController>().passenger.value.token);
+    dynamic response = await passengerApi.past(
+        token: Get.find<UserController>().passenger.value.token);
 
     debugPrint(response["enabled"].toString());
 

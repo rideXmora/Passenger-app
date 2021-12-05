@@ -25,6 +25,14 @@ bool endChanging = false;
 
 class _SearchLocationScreenState extends State<SearchLocationScreen> {
   @override
+  void initState() {
+    super.initState();
+    mapController.findEndPlace("");
+    startController.text = "";
+    endController.text = "";
+  }
+
+  @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
@@ -92,55 +100,79 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
                           SizedBox(
                             height: 18,
                           ),
-                          CustomTextField(
-                            readOnly: false,
-                            height: height,
-                            width: width,
-                            controller: startController,
-                            hintText: "Current location",
-                            prefixBoxColor: primaryColorBlack,
-                            prefixIcon: Icon(
-                              Icons.gps_fixed,
-                              color: primaryColorLight,
+                          Obx(
+                            () => CustomTextField(
+                              readOnly: false,
+                              height: height,
+                              width: width,
+                              controller: startController,
+                              hintText: "Current location",
+                              prefixBoxColor: primaryColorBlack,
+                              prefixIcon: Icon(
+                                Icons.gps_fixed,
+                                color: primaryColorLight,
+                              ),
+                              dropDown: SizedBox(),
+                              onChanged: (String value) {
+                                mapController.findStartPlace(value);
+                                setState(() {
+                                  startChanging = true;
+                                  endChanging = false;
+                                });
+                              },
+                              phoneNumberPrefix: SizedBox(),
+                              suffix: Get.find<MapController>()
+                                          .start
+                                          .value
+                                          .placeId !=
+                                      ""
+                                  ? Container(
+                                      child: Icon(
+                                        Icons.done_sharp,
+                                        color: primaryColorWhite,
+                                      ),
+                                    )
+                                  : SizedBox(),
+                              inputFormatters: [],
                             ),
-                            dropDown: SizedBox(),
-                            onChanged: (String value) {
-                              mapController.findStartPlace(value);
-                              setState(() {
-                                startChanging = true;
-                                endChanging = false;
-                              });
-                            },
-                            phoneNumberPrefix: SizedBox(),
-                            suffix: SizedBox(),
-                            inputFormatters: [],
                           ),
                           SizedBox(
                             height: 18,
                           ),
-                          CustomTextField(
-                            readOnly: false,
-                            height: height,
-                            width: width,
-                            controller: endController,
-                            hintText: "Where to",
-                            prefixBoxColor: primaryColorBlack,
-                            prefixIcon: Icon(
-                              Icons.location_on_rounded,
-                              color: primaryColorLight,
+                          Obx(
+                            () => CustomTextField(
+                              readOnly: false,
+                              height: height,
+                              width: width,
+                              controller: endController,
+                              hintText: "Where to",
+                              prefixBoxColor: primaryColorBlack,
+                              prefixIcon: Icon(
+                                Icons.location_on_rounded,
+                                color: primaryColorLight,
+                              ),
+                              dropDown: SizedBox(),
+                              onChanged: (String value) {
+                                mapController.findEndPlace(value);
+                                setState(() {
+                                  startChanging = false;
+                                  endChanging = true;
+                                });
+                              },
+                              phoneNumberPrefix: SizedBox(),
+                              suffix:
+                                  Get.find<MapController>().to.value.placeId !=
+                                          ""
+                                      ? Container(
+                                          child: Icon(
+                                            Icons.done_sharp,
+                                            color: primaryColorWhite,
+                                          ),
+                                        )
+                                      : SizedBox(),
+                              inputFormatters: [],
                             ),
-                            dropDown: SizedBox(),
-                            onChanged: (String value) {
-                              mapController.findEndPlace(value);
-                              setState(() {
-                                startChanging = false;
-                                endChanging = true;
-                              });
-                            },
-                            phoneNumberPrefix: SizedBox(),
-                            suffix: SizedBox(),
-                            inputFormatters: [],
-                          ),
+                          )
                         ],
                       ),
                     ),
@@ -221,34 +253,18 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
                               })
                           : Column(
                               children: [
-                                // PreviousLocation(
-                                //   icon: Icons.home_rounded,
-                                //   divider: true,
-                                //   title: "Home",
-                                //   subTitle: "Anandarama Rd, Moratuwa.",
-                                //   onTap: () {},
-                                // ),
-                                // PreviousLocation(
-                                //   icon: Icons.history,
-                                //   divider: true,
-                                //   title: "Katubedda Bus Stop",
-                                //   subTitle: "Anandarama Rd, Moratuwa.",
-                                //   onTap: () {},
-                                // ),
-                                // PreviousLocation(
-                                //   icon: Icons.history,
-                                //   divider: true,
-                                //   title: "Katubedda Bus Stop",
-                                //   subTitle: "Anandarama Rd, Moratuwa.",
-                                //   onTap: () {},
-                                // ),
-                                // PreviousLocation(
-                                //   icon: Icons.history,
-                                //   divider: true,
-                                //   title: "Katubedda Bus Stop",
-                                //   subTitle: "Anandarama Rd, Moratuwa.",
-                                //   onTap: () {},
-                                // ),
+                                Padding(
+                                  padding: const EdgeInsets.all(50),
+                                  child: Text(
+                                    "Type on text field and select a place from the drop down",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w500,
+                                      color: primaryColor,
+                                    ),
+                                  ),
+                                ),
                               ],
                             ),
                     ),

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:passenger_app/api/passenger_ride_api.dart';
+import 'package:passenger_app/api/utils.dart';
 import 'package:passenger_app/controllers/user_controller.dart';
 import 'package:passenger_app/modals/location.dart';
 import 'package:passenger_app/modals/organization.dart';
@@ -22,6 +23,17 @@ import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
 
 class RideController extends GetxController {
+  late final PassengerRideApi passengerRideApi;
+
+  RideController(this.passengerRideApi);
+
+  void initState() {
+    this.passengerRideApi = PassengerRideApi(ApiUtils());
+  }
+
+  @visibleForTesting
+  RideController.internal(this.passengerRideApi);
+
   Rx<VehicleType> vehicleType = VehicleType.CAR.obs;
   var stompClient;
   var ride = Ride(
@@ -95,7 +107,7 @@ class RideController extends GetxController {
       debugPrint(startLocation.toJson().toString());
       debugPrint(endLocation.toJson().toString());
       debugPrint(getDriverVehicleTypeString(vehicleType));
-      dynamic response = await request(
+      dynamic response = await passengerRideApi.request(
         startLocation: startLocation,
         endLocation: endLocation,
         distance: distance,
@@ -132,7 +144,7 @@ class RideController extends GetxController {
     try {
       //hardcoded id
       String id = ride.value.rideRequest.id;
-      dynamic response = await cancel(
+      dynamic response = await passengerRideApi.cancel(
         id: id,
         token: Get.find<UserController>().passenger.value.token,
       );
@@ -180,7 +192,7 @@ class RideController extends GetxController {
 
   Future<bool> rideDetails(String id) async {
     try {
-      dynamic response = await getRide(
+      dynamic response = await passengerRideApi.getRide(
         id: id,
         token: Get.find<UserController>().passenger.value.token,
       );
@@ -308,7 +320,7 @@ class RideController extends GetxController {
       //hardcoded id
       String id = ride.value.id;
       debugPrint("complain " + complainBool.toString());
-      dynamic response = await confirm(
+      dynamic response = await passengerRideApi.confirm(
         id: id,
         passengerFeedback: passengerFeedback,
         driverRating: driverRating,
@@ -316,9 +328,8 @@ class RideController extends GetxController {
       );
 
       if (!response["error"]) {
-        debugPrint("complain " + complain.toString());
         if (complainBool) {
-          dynamic response2 = await complain(
+          dynamic response2 = await passengerRideApi.complain(
             id: id,
             complain: passengerFeedback,
             token: Get.find<UserController>().passenger.value.token,
